@@ -364,6 +364,12 @@ if 'generated_df' in st.session_state:
             # Generate SQL
             sql_data = export_to_sql(df, table_name=table_name)
             
+            # Preview SQL (first 20 lines)
+            with st.expander("SQL-Vorschau anzeigen"):
+                sql_preview = "\n".join(sql_data.split("\n")[:20]) + "\n..."
+                st.code(sql_preview, language="sql")
+                st.caption("Nur die ersten 20 Zeilen werden angezeigt.")
+            
             st.download_button(label="SQL herunterladen",
                                data=sql_data,
                                file_name=f"testdaten_{timestamp}.sql",
