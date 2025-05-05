@@ -69,6 +69,7 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 #### 4. Konfigurationen speichern und laden
 
 - Speichern Sie Ihre bevorzugten Generierungskonfigurationen in der Datenbank
+- Eine automatische Zusammenfassung mit 1. Anzahl der Datensätze, 2. Daten-Locale und 3. Exportformat wird im Beschreibungsfeld angezeigt
 - Laden Sie gespeicherte Konfigurationen mit dem Formular "Konfiguration laden" 
 - Löschen Sie nicht mehr benötigte Konfigurationen mit dem Formular "Konfiguration löschen"
 - Nutzen Sie die ID aus der darunter angezeigten Liste der gespeicherten Konfigurationen

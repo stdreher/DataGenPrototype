@@ -284,11 +284,16 @@ if 'generated_df' in st.session_state:
     with save_col:
         st.header("4. Konfiguration speichern")
         
+        # Create a summary of the configuration with the specified format
+        config_summary = f"1. {num_records}\n"
+        config_summary += f"2. {locale}\n"
+        config_summary += f"3. {export_format}"
+        
         save_form = st.form(key="save_form")
         with save_form:
             st.markdown("Speichern Sie diese Konfiguration für später:")
             dataset_name = st.text_input("Name", value=f"Datensatz {time.strftime('%Y-%m-%d %H:%M')}")
-            dataset_description = st.text_area("Beschreibung", value="")
+            dataset_description = st.text_area("Beschreibung", value=config_summary)
             save_submit = st.form_submit_button("Konfiguration speichern")
         
         if save_submit:
