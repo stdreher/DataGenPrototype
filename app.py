@@ -3,11 +3,13 @@ import pandas as pd
 import numpy as np
 import json
 import time
+import datetime
 from io import StringIO, BytesIO
 
 from data_generator import generate_data
 from field_definitions import field_definitions
 from export_utils import export_to_csv, export_to_json
+from database_utils import save_dataset_config, get_all_saved_datasets, get_dataset_by_id, delete_dataset
 
 # Set page config
 st.set_page_config(
@@ -250,25 +252,141 @@ if 'generated_df' in st.session_state:
     st.dataframe(df, height=400)
     
     # Create a download button
-    st.header("3. Generierte Daten herunterladen")
+    download_col, save_col = st.columns(2)
     
-    if export_format == "CSV":
-        csv_data = export_to_csv(df)
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        st.download_button(
-            label="CSV herunterladen",
-            data=csv_data,
-            file_name=f"testdaten_{timestamp}.csv",
-            mime="text/csv",
-            use_container_width=True
-        )
-    else:  # JSON
-        json_data = export_to_json(df)
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        st.download_button(
-            label="JSON herunterladen",
-            data=json_data,
-            file_name=f"testdaten_{timestamp}.json",
-            mime="application/json",
-            use_container_width=True
-        )
+    with download_col:
+        st.header("3. Generierte Daten herunterladen")
+        
+        if export_format == "CSV":
+            csv_data = export_to_csv(df)
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            st.download_button(
+                label="CSV herunterladen",
+                data=csv_data,
+                file_name=f"testdaten_{timestamp}.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+        else:  # JSON
+            json_data = export_to_json(df)
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            st.download_button(
+                label="JSON herunterladen",
+                data=json_data,
+                file_name=f"testdaten_{timestamp}.json",
+                mime="application/json",
+                use_container_width=True
+            )
+    
+    # Add option to save the configuration to the database
+    with save_col:
+        st.header("4. Konfiguration speichern")
+        
+        save_form = st.form(key="save_form")
+        with save_form:
+            st.markdown("Speichern Sie diese Konfiguration für später:")
+            dataset_name = st.text_input("Name", value=f"Datensatz {time.strftime('%Y-%m-%d %H:%M')}")
+            dataset_description = st.text_area("Beschreibung", value="")
+            save_submit = st.form_submit_button("Konfiguration speichern")
+        
+        if save_submit:
+            # Get the selected fields
+            selected_fields_config = {
+                field: st.session_state.field_config.get(field, {})
+                for field in selected_field_names
+            }
+            
+            # Current timestamp
+            created_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            try:
+                # Save the configuration to the database
+                dataset_id = save_dataset_config(
+                    name=dataset_name,
+                    description=dataset_description,
+                    num_records=num_records,
+                    locale=locale,
+                    selected_fields=selected_field_names,
+                    field_config=selected_fields_config,
+                    created_at=created_at
+                )
+                
+                st.success(f"Konfiguration '{dataset_name}' erfolgreich gespeichert!")
+            
+            except Exception as e:
+                st.error(f"Fehler beim Speichern der Konfiguration: {str(e)}")
+
+# Add a section to load saved configurations
+st.header("Gespeicherte Konfigurationen")
+
+try:
+    # Get all saved datasets
+    saved_datasets_df = get_all_saved_datasets()
+    
+    if saved_datasets_df.empty:
+        st.info("Keine gespeicherten Konfigurationen gefunden. Generieren Sie einen Datensatz und speichern Sie ihn, um ihn hier anzuzeigen.")
+    else:
+        # Display the saved datasets in a table
+        st.markdown("Klicken Sie auf 'Laden', um eine gespeicherte Konfiguration zu verwenden:")
+        
+        # Create a dataframe for display
+        display_df = saved_datasets_df[['id', 'name', 'description', 'num_records', 'locale', 'created_at']].copy()
+        display_df.columns = ['ID', 'Name', 'Beschreibung', 'Anzahl Datensätze', 'Locale', 'Erstellt am']
+        
+        # Show the table
+        st.dataframe(display_df, height=200)
+        
+        # Load or delete saved configuration
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Load a configuration
+            load_form = st.form(key="load_form")
+            with load_form:
+                st.markdown("### Konfiguration laden")
+                load_id = st.number_input("Konfigurations-ID", min_value=1, value=1)
+                load_submit = st.form_submit_button("Konfiguration laden")
+            
+            if load_submit:
+                dataset = get_dataset_by_id(load_id)
+                
+                if dataset is None:
+                    st.error(f"Keine Konfiguration mit ID {load_id} gefunden.")
+                else:
+                    # Update the session state with the loaded configuration
+                    for field in field_definitions.keys():
+                        if field in dataset['fields']:
+                            st.session_state.selected_fields[field] = True
+                        else:
+                            st.session_state.selected_fields[field] = False
+                    
+                    # Update field configurations
+                    st.session_state.field_config = dataset['field_config']
+                    
+                    # Show success message
+                    st.success(f"Konfiguration '{dataset['name']}' geladen! Die Seite wird neu geladen...")
+                    
+                    # Rerun the app to update the UI
+                    time.sleep(1)
+                    st.rerun()
+        
+        with col2:
+            # Delete a configuration
+            delete_form = st.form(key="delete_form")
+            with delete_form:
+                st.markdown("### Konfiguration löschen")
+                delete_id = st.number_input("Konfigurations-ID", min_value=1, value=1, key="delete_id")
+                delete_submit = st.form_submit_button("Konfiguration löschen")
+            
+            if delete_submit:
+                success = delete_dataset(delete_id)
+                
+                if success:
+                    st.success(f"Konfiguration mit ID {delete_id} gelöscht!")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error(f"Keine Konfiguration mit ID {delete_id} gefunden.")
+
+except Exception as e:
+    st.error(f"Fehler beim Laden der gespeicherten Konfigurationen: {str(e)}")
