@@ -8,7 +8,7 @@ from io import StringIO, BytesIO
 
 from data_generator import generate_data
 from field_definitions import field_definitions
-from export_utils import export_to_csv, export_to_json
+from export_utils import export_to_csv, export_to_json, export_to_sql
 from database_utils import save_dataset_config, get_all_saved_datasets, get_dataset_by_id, delete_dataset, delete_dataset_range
 
 # Set page config
@@ -91,7 +91,7 @@ with st.sidebar:
                                value=42)
 
     # Export format
-    export_format = st.radio("Exportformat", options=["CSV", "JSON"], index=0)
+    export_format = st.radio("Exportformat", options=["CSV", "JSON", "SQL"], index=0)
 
     st.divider()
 
@@ -338,21 +338,36 @@ if 'generated_df' in st.session_state:
     with download_col:
         st.header("3. Generierte Daten herunterladen")
 
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        
         if export_format == "CSV":
             csv_data = export_to_csv(df)
-            timestamp = time.strftime("%Y%m%d_%H%M%S")
             st.download_button(label="CSV herunterladen",
                                data=csv_data,
                                file_name=f"testdaten_{timestamp}.csv",
                                mime="text/csv",
                                use_container_width=True)
-        else:  # JSON
+        elif export_format == "JSON":
             json_data = export_to_json(df)
-            timestamp = time.strftime("%Y%m%d_%H%M%S")
             st.download_button(label="JSON herunterladen",
                                data=json_data,
                                file_name=f"testdaten_{timestamp}.json",
                                mime="application/json",
+                               use_container_width=True)
+        else:  # SQL
+            # Add option for table name
+            table_name = st.text_input("Tabellen-Name (für SQL-Script)", value="testdaten")
+            
+            # Display SQL dialect info
+            st.info("Das SQL-Script ist mit PostgreSQL, MySQL, SQLite und den meisten anderen SQL-Dialekten kompatibel.")
+            
+            # Generate SQL
+            sql_data = export_to_sql(df, table_name=table_name)
+            
+            st.download_button(label="SQL herunterladen",
+                               data=sql_data,
+                               file_name=f"testdaten_{timestamp}.sql",
+                               mime="text/plain",
                                use_container_width=True)
 
     # Add option to save the configuration to the database
