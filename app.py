@@ -14,12 +14,12 @@ from database_utils import save_dataset_config, get_all_saved_datasets, get_data
 # Set page config
 st.set_page_config(
     page_title="Testdaten Generator",
-    page_icon="🧪",
+    page_icon="🎲",
     layout="wide",
 )
 
 # Title and introduction
-st.title("🧪 Testdaten Generator")
+st.title("🎲 Testdaten Generator")
 st.markdown("""
 Generieren Sie synthetische Testdaten für Webportale mit anpassbaren Feldern und Formaten.
 Wählen Sie die benötigten Felder aus, passen Sie die Parameter an und laden Sie Ihren Datensatz herunter.
@@ -64,7 +64,7 @@ with st.sidebar:
 
     st.divider()
 
-    st.markdown("### Über")
+    st.markdown("### 🎲 Über")
     st.markdown("""
     Dieses Tool generiert synthetische Daten mit der Faker-Bibliothek.
     Die Daten werden zufällig erzeugt und basieren nicht auf realen Personen.
