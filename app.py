@@ -328,51 +328,6 @@ try:
     if saved_datasets_df.empty:
         st.info("Keine gespeicherten Konfigurationen gefunden. Generieren Sie einen Datensatz und speichern Sie ihn, um ihn hier anzuzeigen.")
     else:
-        # Display the saved datasets in a table
-        st.markdown("Klicken Sie auf 'Laden', um eine gespeicherte Konfiguration zu verwenden:")
-        
-        # Create a dataframe for display
-        display_df = saved_datasets_df[['id', 'name', 'description', 'num_records', 'locale', 'created_at']].copy()
-        display_df.columns = ['ID', 'Name', 'Beschreibung', 'Anzahl Datensätze', 'Locale', 'Erstellt am']
-        
-        # Show the table with column configuration to ensure all columns are appropriately sized
-        st.dataframe(
-            display_df, 
-            height=200,
-            column_config={
-                "ID": st.column_config.NumberColumn(
-                    "ID",
-                    width="small",
-                    help="Die eindeutige ID der gespeicherten Konfiguration"
-                ),
-                "Name": st.column_config.TextColumn(
-                    "Name",
-                    width="medium",
-                    help="Name der Konfiguration"
-                ),
-                "Beschreibung": st.column_config.TextColumn(
-                    "Beschreibung",
-                    width="large",
-                    help="Beschreibung der Konfiguration"
-                ),
-                "Anzahl Datensätze": st.column_config.NumberColumn(
-                    "Anzahl Datensätze",
-                    width="small",
-                    help="Anzahl der generierten Datensätze"
-                ),
-                "Locale": st.column_config.TextColumn(
-                    "Locale",
-                    width="small",
-                    help="Verwendete Sprach- und Ländereinstellung"
-                ),
-                "Erstellt am": st.column_config.TextColumn(
-                    "Erstellt am",
-                    width="medium",
-                    help="Zeitpunkt der Erstellung"
-                )
-            }
-        )
-        
         # Load or delete saved configuration
         col1, col2 = st.columns(2)
         
@@ -424,6 +379,52 @@ try:
                     st.rerun()
                 else:
                     st.error(f"Keine Konfiguration mit ID {delete_id} gefunden.")
+        
+        # Display the saved datasets in a table below the forms
+        st.subheader("Liste der gespeicherten Konfigurationen")
+        st.markdown("Verwenden Sie die ID einer Konfiguration in den obigen Formularen:")
+        
+        # Create a dataframe for display
+        display_df = saved_datasets_df[['id', 'name', 'description', 'num_records', 'locale', 'created_at']].copy()
+        display_df.columns = ['ID', 'Name', 'Beschreibung', 'Anzahl Datensätze', 'Locale', 'Erstellt am']
+        
+        # Show the table with column configuration to ensure all columns are appropriately sized
+        st.dataframe(
+            display_df, 
+            height=200,
+            column_config={
+                "ID": st.column_config.NumberColumn(
+                    "ID",
+                    width="small",
+                    help="Die eindeutige ID der gespeicherten Konfiguration"
+                ),
+                "Name": st.column_config.TextColumn(
+                    "Name",
+                    width="medium",
+                    help="Name der Konfiguration"
+                ),
+                "Beschreibung": st.column_config.TextColumn(
+                    "Beschreibung",
+                    width="large",
+                    help="Beschreibung der Konfiguration"
+                ),
+                "Anzahl Datensätze": st.column_config.NumberColumn(
+                    "Anzahl Datensätze",
+                    width="small",
+                    help="Anzahl der generierten Datensätze"
+                ),
+                "Locale": st.column_config.TextColumn(
+                    "Locale",
+                    width="small",
+                    help="Verwendete Sprach- und Ländereinstellung"
+                ),
+                "Erstellt am": st.column_config.TextColumn(
+                    "Erstellt am",
+                    width="medium",
+                    help="Zeitpunkt der Erstellung"
+                )
+            }
+        )
 
 except Exception as e:
     st.error(f"Fehler beim Laden der gespeicherten Konfigurationen: {str(e)}")
