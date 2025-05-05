@@ -345,8 +345,43 @@ try:
         display_df = saved_datasets_df[['id', 'name', 'description', 'num_records', 'locale', 'created_at']].copy()
         display_df.columns = ['ID', 'Name', 'Beschreibung', 'Anzahl Datensätze', 'Locale', 'Erstellt am']
         
-        # Show the table
-        st.dataframe(display_df, height=200)
+        # Show the table with column configuration to ensure all columns are appropriately sized
+        st.dataframe(
+            display_df, 
+            height=200,
+            column_config={
+                "ID": st.column_config.NumberColumn(
+                    "ID",
+                    width="small",
+                    help="Die eindeutige ID der gespeicherten Konfiguration"
+                ),
+                "Name": st.column_config.TextColumn(
+                    "Name",
+                    width="medium",
+                    help="Name der Konfiguration"
+                ),
+                "Beschreibung": st.column_config.TextColumn(
+                    "Beschreibung",
+                    width="large",
+                    help="Beschreibung der Konfiguration"
+                ),
+                "Anzahl Datensätze": st.column_config.NumberColumn(
+                    "Anzahl Datensätze",
+                    width="small",
+                    help="Anzahl der generierten Datensätze"
+                ),
+                "Locale": st.column_config.TextColumn(
+                    "Locale",
+                    width="small",
+                    help="Verwendete Sprach- und Ländereinstellung"
+                ),
+                "Erstellt am": st.column_config.TextColumn(
+                    "Erstellt am",
+                    width="medium",
+                    help="Zeitpunkt der Erstellung"
+                )
+            }
+        )
         
         # Load or delete saved configuration
         col1, col2 = st.columns(2)
