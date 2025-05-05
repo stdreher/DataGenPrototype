@@ -11,29 +11,29 @@ from export_utils import export_to_csv, export_to_json
 
 # Set page config
 st.set_page_config(
-    page_title="Test Data Generator",
+    page_title="Testdaten Generator",
     page_icon="🧪",
     layout="wide",
 )
 
 # Title and introduction
-st.title("🧪 Test Data Generator")
+st.title("🧪 Testdaten Generator")
 st.markdown("""
-Generate synthetic test data for web portals with customizable fields and formats.
-Select the fields you need, customize their parameters, and download your dataset.
+Generieren Sie synthetische Testdaten für Webportale mit anpassbaren Feldern und Formaten.
+Wählen Sie die benötigten Felder aus, passen Sie die Parameter an und laden Sie Ihren Datensatz herunter.
 """)
 
 # Sidebar for controls
 with st.sidebar:
-    st.header("Generation Settings")
+    st.header("Generierungseinstellungen")
     
     # Number of records
     num_records = st.number_input(
-        "Number of records to generate",
+        "Anzahl der zu generierenden Datensätze",
         min_value=1,
         max_value=10000,
         value=100,
-        help="The total number of data entries to generate"
+        help="Die Gesamtzahl der zu erzeugenden Dateneinträge"
     )
     
     # Locale selection
@@ -42,35 +42,35 @@ with st.sidebar:
         "it_IT", "ja_JP", "zh_CN", "pt_BR", "ru_RU"
     ]
     locale = st.selectbox(
-        "Data locale",
+        "Daten-Locale",
         options=locale_options,
-        index=0,
-        help="The locale determines the style and format of the generated data"
+        index=3,  # Setting default to German (de_DE)
+        help="Die Locale bestimmt den Stil und das Format der generierten Daten"
     )
     
     # Random seed for reproducibility
-    use_seed = st.checkbox("Use random seed (for reproducible results)", value=False)
+    use_seed = st.checkbox("Zufallsseed verwenden (für reproduzierbare Ergebnisse)", value=False)
     seed = None
     if use_seed:
-        seed = st.number_input("Random seed", min_value=0, max_value=999999, value=42)
+        seed = st.number_input("Zufallsseed", min_value=0, max_value=999999, value=42)
     
     # Export format
     export_format = st.radio(
-        "Export format",
+        "Exportformat",
         options=["CSV", "JSON"],
         index=0
     )
     
     st.divider()
     
-    st.markdown("### About")
+    st.markdown("### Über")
     st.markdown("""
-    This tool generates synthetic data using the Faker library.
-    Data is randomly generated and not based on real individuals.
+    Dieses Tool generiert synthetische Daten mit der Faker-Bibliothek.
+    Die Daten werden zufällig erzeugt und basieren nicht auf realen Personen.
     """)
 
 # Main content area
-st.header("1. Select and Configure Fields")
+st.header("1. Felder auswählen und konfigurieren")
 
 # Field selection
 field_cols = st.columns(3)
@@ -91,12 +91,12 @@ if 'selected_fields' not in st.session_state:
 
 # Group fields by category for better organization
 field_categories = {
-    "Identity": ["username", "email", "password", "full_name"],
-    "Address": ["street_address", "city", "state", "zip_code", "country"],
-    "Contact": ["phone_number", "job_title", "company"],
-    "Personal": ["date_of_birth", "gender", "credit_card"],
+    "Identität": ["username", "email", "password", "full_name"],
+    "Adresse": ["street_address", "city", "state", "zip_code", "country"],
+    "Kontakt": ["phone_number", "job_title", "company"],
+    "Persönlich": ["date_of_birth", "gender", "credit_card"],
     "Internet": ["user_agent", "ipv4", "ipv6", "mac_address"],
-    "Misc": ["uuid", "color", "currency_code"]
+    "Sonstiges": ["uuid", "color", "currency_code"]
 }
 
 # Create tabs for each category
@@ -188,19 +188,19 @@ for i, (category, fields) in enumerate(field_categories.items()):
                             )
 
 # Generate button
-st.header("2. Generate and Preview Data")
-generate_button = st.button("Generate Data", type="primary", use_container_width=True)
+st.header("2. Daten generieren und Vorschau anzeigen")
+generate_button = st.button("Daten generieren", type="primary", use_container_width=True)
 
 # Check if any fields are selected
 selected_field_names = [f for f, v in st.session_state.selected_fields.items() if v]
 
 if not selected_field_names:
-    st.warning("Please select at least one field to generate data.")
+    st.warning("Bitte wählen Sie mindestens ein Feld aus, um Daten zu generieren.")
     st.stop()
 
 # Generate data when the button is clicked
 if generate_button:
-    with st.spinner("Generating data..."):
+    with st.spinner("Daten werden generiert..."):
         # Get the fields that are selected
         selected_fields_config = {
             field: st.session_state.field_config.get(field, {})
@@ -220,45 +220,45 @@ if generate_button:
             st.session_state.generated_df = df
             
             # Add success message
-            st.success(f"Successfully generated {num_records} records!")
+            st.success(f"{num_records} Datensätze erfolgreich generiert!")
         except Exception as e:
-            st.error(f"Error generating data: {str(e)}")
+            st.error(f"Fehler bei der Datengenerierung: {str(e)}")
             st.stop()
 
 # Display the generated data if available
 if 'generated_df' in st.session_state:
     # Display stats
     df = st.session_state.generated_df
-    st.subheader("Dataset Preview")
+    st.subheader("Datensatz-Vorschau")
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Total Records", df.shape[0])
+        st.metric("Anzahl Datensätze", df.shape[0])
     with col2:
-        st.metric("Total Fields", df.shape[1])
+        st.metric("Anzahl Felder", df.shape[1])
     with col3:
         memory_usage = df.memory_usage(deep=True).sum()
         if memory_usage < 1024:
-            memory_str = f"{memory_usage} bytes"
+            memory_str = f"{memory_usage} Bytes"
         elif memory_usage < 1024 * 1024:
             memory_str = f"{memory_usage/1024:.1f} KB"
         else:
             memory_str = f"{memory_usage/(1024*1024):.1f} MB"
-        st.metric("Memory Usage", memory_str)
+        st.metric("Speichernutzung", memory_str)
     
     # Display the dataframe
     st.dataframe(df, height=400)
     
     # Create a download button
-    st.header("3. Download Generated Data")
+    st.header("3. Generierte Daten herunterladen")
     
     if export_format == "CSV":
         csv_data = export_to_csv(df)
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         st.download_button(
-            label="Download CSV",
+            label="CSV herunterladen",
             data=csv_data,
-            file_name=f"test_data_{timestamp}.csv",
+            file_name=f"testdaten_{timestamp}.csv",
             mime="text/csv",
             use_container_width=True
         )
@@ -266,9 +266,9 @@ if 'generated_df' in st.session_state:
         json_data = export_to_json(df)
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         st.download_button(
-            label="Download JSON",
+            label="JSON herunterladen",
             data=json_data,
-            file_name=f"test_data_{timestamp}.json",
+            file_name=f"testdaten_{timestamp}.json",
             mime="application/json",
             use_container_width=True
         )

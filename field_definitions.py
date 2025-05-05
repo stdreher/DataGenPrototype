@@ -80,171 +80,171 @@ def generate_phone_number(fake, config):
 # Define all available fields with their configurations
 field_definitions = {
     "username": {
-        "display_name": "Username",
+        "display_name": "Benutzername",
         "generator": generate_username,
         "params": {
-            "min_length": {"type": "int", "default": 6, "min": 3, "max": 20, "help": "Minimum length of username"},
-            "max_length": {"type": "int", "default": 12, "min": 3, "max": 30, "help": "Maximum length of username"},
-            "with_numbers": {"type": "bool", "default": True, "help": "Include numbers in username"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "min_length": {"type": "int", "default": 6, "min": 3, "max": 20, "help": "Minimale Länge des Benutzernamens"},
+            "max_length": {"type": "int", "default": 12, "min": 3, "max": 30, "help": "Maximale Länge des Benutzernamens"},
+            "with_numbers": {"type": "bool", "default": True, "help": "Zahlen im Benutzernamen einschließen"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "email": {
-        "display_name": "Email",
+        "display_name": "E-Mail",
         "generator": "email",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "password": {
-        "display_name": "Password",
+        "display_name": "Passwort",
         "generator": generate_password,
         "params": {
-            "length": {"type": "int", "default": 12, "min": 4, "max": 30, "help": "Length of password"},
-            "include_special": {"type": "bool", "default": True, "help": "Include special characters"},
-            "include_digits": {"type": "bool", "default": True, "help": "Include numbers"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "length": {"type": "int", "default": 12, "min": 4, "max": 30, "help": "Länge des Passworts"},
+            "include_special": {"type": "bool", "default": True, "help": "Sonderzeichen einschließen"},
+            "include_digits": {"type": "bool", "default": True, "help": "Zahlen einschließen"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "full_name": {
-        "display_name": "Full Name",
+        "display_name": "Vollständiger Name",
         "generator": generate_full_name,
         "params": {
-            "with_middle": {"type": "bool", "default": False, "help": "Include middle initial"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "with_middle": {"type": "bool", "default": False, "help": "Zweiten Vornamen einschließen"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "street_address": {
-        "display_name": "Street Address",
+        "display_name": "Straßenadresse",
         "generator": generate_street_address,
         "params": {
-            "include_secondary": {"type": "bool", "default": True, "help": "Include apartment/suite numbers"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "include_secondary": {"type": "bool", "default": True, "help": "Wohnungsnummer einschließen"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "city": {
-        "display_name": "City",
+        "display_name": "Stadt",
         "generator": "city",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "state": {
-        "display_name": "State/Province",
+        "display_name": "Bundesland",
         "generator": "state",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "zip_code": {
-        "display_name": "Zip/Postal Code",
+        "display_name": "Postleitzahl",
         "generator": "postcode",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "country": {
-        "display_name": "Country",
+        "display_name": "Land",
         "generator": "country",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "phone_number": {
-        "display_name": "Phone Number",
+        "display_name": "Telefonnummer",
         "generator": generate_phone_number,
         "params": {
             "format": {"type": "select", "default": "standard", "options": ["standard", "international"], 
-                      "label": "Format", "help": "Phone number format"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+                      "label": "Format", "help": "Format der Telefonnummer"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "date_of_birth": {
-        "display_name": "Date of Birth",
+        "display_name": "Geburtsdatum",
         "generator": generate_date_of_birth,
         "params": {
-            "min_age": {"type": "int", "default": 18, "min": 1, "max": 100, "help": "Minimum age in years"},
-            "max_age": {"type": "int", "default": 90, "min": 1, "max": 120, "help": "Maximum age in years"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "min_age": {"type": "int", "default": 18, "min": 1, "max": 100, "help": "Mindestalter in Jahren"},
+            "max_age": {"type": "int", "default": 90, "min": 1, "max": 120, "help": "Maximalalter in Jahren"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "gender": {
-        "display_name": "Gender",
+        "display_name": "Geschlecht",
         "generator": "random_element",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "credit_card": {
-        "display_name": "Credit Card",
+        "display_name": "Kreditkarte",
         "generator": generate_credit_card,
         "params": {
             "provider": {"type": "select", "default": "any", "options": ["any", "visa", "mastercard"], 
-                       "label": "Card Provider", "help": "Credit card provider"},
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+                       "label": "Kartenanbieter", "help": "Kreditkartenanbieter"},
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "job_title": {
-        "display_name": "Job Title",
+        "display_name": "Berufsbezeichnung",
         "generator": "job",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "company": {
-        "display_name": "Company",
+        "display_name": "Unternehmen",
         "generator": "company",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "user_agent": {
-        "display_name": "User Agent",
+        "display_name": "User-Agent",
         "generator": "user_agent",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "ipv4": {
-        "display_name": "IPv4 Address",
+        "display_name": "IPv4-Adresse",
         "generator": "ipv4",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "ipv6": {
-        "display_name": "IPv6 Address",
+        "display_name": "IPv6-Adresse",
         "generator": "ipv6",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "mac_address": {
-        "display_name": "MAC Address",
+        "display_name": "MAC-Adresse",
         "generator": "mac_address",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "uuid": {
         "display_name": "UUID",
         "generator": "uuid4",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "color": {
-        "display_name": "Color",
+        "display_name": "Farbe",
         "generator": "color_name",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     },
     "currency_code": {
-        "display_name": "Currency Code",
+        "display_name": "Währungscode",
         "generator": "currency_code",
         "params": {
-            "permutate": {"type": "bool", "default": False, "help": "Randomly permutate the data"}
+            "permutate": {"type": "bool", "default": False, "help": "Daten zufällig permutieren"}
         }
     }
 }
