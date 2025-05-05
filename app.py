@@ -18,6 +18,37 @@ st.set_page_config(
     layout="wide",
 )
 
+# Add custom CSS for dice animation
+st.markdown("""
+<style>
+@keyframes dice-roll {
+    0% { transform: rotate(0deg) translateY(0); font-size: 2em; }
+    25% { transform: rotate(180deg) translateY(-20px); font-size: 3em; }
+    50% { transform: rotate(360deg) translateY(0); font-size: 4em; }
+    75% { transform: rotate(540deg) translateY(-20px); font-size: 3em; }
+    100% { transform: rotate(720deg) translateY(0); font-size: 2em; }
+}
+
+.dice-animation {
+    display: inline-block;
+    animation: dice-roll 1.5s ease-in-out;
+}
+
+.dice-container {
+    text-align: center;
+    padding: 20px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dice-icon {
+    font-size: 2em;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Title and introduction
 st.title("🎲 Testdaten Generator")
 st.markdown("""
@@ -205,10 +236,25 @@ with col2:
 
 # Handle reset button
 if reset_button:
+    # Create a container for the dice animation
+    reset_dice_container = st.empty()
+    
+    # Show the animated dice
+    reset_dice_container.markdown("""
+    <div class="dice-container">
+        <div class="dice-icon dice-animation">🎲</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     # Clear generated data if it exists
     if 'generated_df' in st.session_state:
         del st.session_state['generated_df']
-        st.success("Datenvorschau wurde zurückgesetzt!")
+        
+        # Clear the animation container
+        reset_dice_container.empty()
+        
+        st.success("🎲 Datenvorschau wurde zurückgesetzt!")
+        time.sleep(0.5)
         st.rerun()
 
 # Check if any fields are selected
@@ -223,6 +269,16 @@ if not selected_field_names:
 
 # Generate data when the button is clicked
 if generate_button:
+    # Create a container for the dice animation
+    dice_container = st.empty()
+    
+    # Show the animated dice
+    dice_container.markdown("""
+    <div class="dice-container">
+        <div class="dice-icon dice-animation">🎲</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     with st.spinner("Daten werden generiert..."):
         # Get the fields that are selected
         selected_fields_config = {
@@ -240,9 +296,15 @@ if generate_button:
             # Store the dataframe in session state
             st.session_state.generated_df = df
 
-            # Add success message
-            st.success(f"{num_records} Datensätze erfolgreich generiert!")
+            # Clear the animation container
+            dice_container.empty()
+
+            # Add success message with the static dice
+            st.success(f"🎲 {num_records} Datensätze erfolgreich generiert!")
         except Exception as e:
+            # Clear the animation container
+            dice_container.empty()
+            
             st.error(f"Fehler bei der Datengenerierung: {str(e)}")
             st.stop()
 
@@ -365,9 +427,21 @@ try:
                 load_submit = st.form_submit_button("Konfiguration laden")
 
             if load_submit:
+                # Create a container for the dice animation
+                load_dice_container = st.empty()
+                
+                # Show the animated dice
+                load_dice_container.markdown("""
+                <div class="dice-container">
+                    <div class="dice-icon dice-animation">🎲</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
                 dataset = get_dataset_by_id(load_id)
 
                 if dataset is None:
+                    # Clear the animation container
+                    load_dice_container.empty()
                     st.error(f"Keine Konfiguration mit ID {load_id} gefunden.")
                 else:
                     # Update the session state with the loaded configuration
@@ -380,9 +454,12 @@ try:
                     # Update field configurations
                     st.session_state.field_config = dataset['field_config']
 
+                    # Clear the animation container
+                    load_dice_container.empty()
+                    
                     # Show success message
                     st.success(
-                        f"Konfiguration '{dataset['name']}' geladen! Die Seite wird neu geladen..."
+                        f"🎲 Konfiguration '{dataset['name']}' geladen! Die Seite wird neu geladen..."
                     )
 
                     # Rerun the app to update the UI
@@ -415,11 +492,24 @@ try:
                 delete_submit = st.form_submit_button("Konfiguration löschen")
             
             if delete_submit:
+                # Create a container for the dice animation
+                delete_dice_container = st.empty()
+                
+                # Show the animated dice
+                delete_dice_container.markdown("""
+                <div class="dice-container">
+                    <div class="dice-icon dice-animation">🎲</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
                 if delete_option == "Einzel-ID":
                     success = delete_dataset(delete_id)
                     
+                    # Clear the animation container
+                    delete_dice_container.empty()
+                    
                     if success:
-                        st.success(f"Konfiguration mit ID {delete_id} gelöscht!")
+                        st.success(f"🎲 Konfiguration mit ID {delete_id} gelöscht!")
                         time.sleep(1)
                         st.rerun()
                     else:
@@ -431,19 +521,28 @@ try:
                             start_id, end_id = map(int, delete_range.split("-"))
                             
                             if start_id > end_id:
+                                # Clear the animation container
+                                delete_dice_container.empty()
                                 st.error("Start-ID muss kleiner oder gleich End-ID sein.")
                             else:
                                 deleted_count = delete_dataset_range(start_id, end_id)
                                 
+                                # Clear the animation container
+                                delete_dice_container.empty()
+                                
                                 if deleted_count > 0:
-                                    st.success(f"{deleted_count} Konfiguration(en) im Bereich {start_id}-{end_id} gelöscht!")
+                                    st.success(f"🎲 {deleted_count} Konfiguration(en) im Bereich {start_id}-{end_id} gelöscht!")
                                     time.sleep(1)
                                     st.rerun()
                                 else:
                                     st.warning(f"Keine Konfigurationen im Bereich {start_id}-{end_id} gefunden.")
                         else:
+                            # Clear the animation container
+                            delete_dice_container.empty()
                             st.error("Ungültiges Format. Bitte geben Sie den Bereich im Format 'Start-Ende' ein, z.B. '2-6'.")
                     except ValueError:
+                        # Clear the animation container
+                        delete_dice_container.empty()
                         st.error("Ungültiges Format. Bitte geben Sie gültige Zahlen ein.")
 
         # Display the saved datasets in a table below the forms
