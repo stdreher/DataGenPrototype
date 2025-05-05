@@ -50,8 +50,36 @@ def generate_data(selected_fields, num_records=10, locale='de_DE', seed=None):
             ]
         else:
             # Use the field name as the faker method
-            faker_method = getattr(fake, generator_function)
-            column_data = [faker_method() for _ in range(num_records)]
+            try:
+                if generator_function == 'state':
+                    # Handle state generation differently based on locale
+                    if locale == 'en_US':
+                        column_data = [fake.state() for _ in range(num_records)]
+                    elif locale == 'de_DE':
+                        # German states
+                        german_states = ["Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", 
+                                         "Bremen", "Hamburg", "Hessen", "Mecklenburg-Vorpommern", 
+                                         "Niedersachsen", "Nordrhein-Westfalen", "Rheinland-Pfalz", 
+                                         "Saarland", "Sachsen", "Sachsen-Anhalt", 
+                                         "Schleswig-Holstein", "Thüringen"]
+                        column_data = [random.choice(german_states) for _ in range(num_records)]
+                    else:
+                        # For other locales, use a generic approach
+                        column_data = [f"Region {i+1}" for i in range(num_records)]
+                elif generator_function == 'random_element' and field_name == 'gender':
+                    # Handle gender field
+                    if locale.startswith('de'):
+                        column_data = [random.choice(['männlich', 'weiblich', 'divers']) for _ in range(num_records)]
+                    else:
+                        column_data = [random.choice(['male', 'female', 'other']) for _ in range(num_records)]
+                else:
+                    # Standard case for other fields
+                    faker_method = getattr(fake, generator_function)
+                    column_data = [faker_method() for _ in range(num_records)]
+            except AttributeError as e:
+                # Fallback for methods not supported in this Faker version
+                print(f"Attribute error for {generator_function}: {str(e)}")
+                column_data = [f"[Generator '{generator_function}' nicht verfügbar]" for _ in range(num_records)]
 
         # Add the column to the dataframe
         df[definition.get('display_name', field_name)] = column_data
