@@ -193,3 +193,36 @@ def delete_dataset(dataset_id):
     
     finally:
         session.close()
+
+def delete_dataset_range(start_id, end_id):
+    """
+    Delete a range of saved dataset configurations by ID range
+    
+    Args:
+        start_id (int): Start ID of the range to delete
+        end_id (int): End ID of the range to delete
+        
+    Returns:
+        int: Number of rows deleted
+    """
+    # Create a session
+    session = Session()
+    
+    try:
+        # Delete rows with IDs in the specified range
+        stmt = delete(saved_datasets).where(
+            saved_datasets.c.id >= start_id,
+            saved_datasets.c.id <= end_id
+        )
+        result = session.execute(stmt)
+        session.commit()
+        
+        # Return the number of rows deleted
+        return result.rowcount
+    
+    except Exception as e:
+        session.rollback()
+        raise e
+    
+    finally:
+        session.close()

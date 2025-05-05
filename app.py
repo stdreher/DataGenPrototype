@@ -9,7 +9,7 @@ from io import StringIO, BytesIO
 from data_generator import generate_data
 from field_definitions import field_definitions
 from export_utils import export_to_csv, export_to_json
-from database_utils import save_dataset_config, get_all_saved_datasets, get_dataset_by_id, delete_dataset
+from database_utils import save_dataset_config, get_all_saved_datasets, get_dataset_by_id, delete_dataset, delete_dataset_range
 
 # Set page config
 st.set_page_config(
@@ -309,7 +309,7 @@ if 'generated_df' in st.session_state:
                 "Name", value=f"Datensatz {time.strftime('%Y-%m-%d %H:%M')}")
             dataset_description = st.text_area("Beschreibung",
                                                value=config_summary,
-                                               height=150)
+                                               height=170)
             save_submit = st.form_submit_button("Konfiguration speichern")
 
         if save_submit:
@@ -394,22 +394,57 @@ try:
             delete_form = st.form(key="delete_form")
             with delete_form:
                 st.markdown("### Konfiguration löschen")
-                delete_id = st.number_input("Konfigurations-ID",
-                                            min_value=1,
-                                            value=1,
-                                            key="delete_id")
+                delete_option = st.radio(
+                    "Löschen nach:",
+                    options=["Einzel-ID", "ID-Bereich"],
+                    horizontal=True
+                )
+                
+                if delete_option == "Einzel-ID":
+                    delete_id = st.number_input("Konfigurations-ID",
+                                                min_value=1,
+                                                value=1,
+                                                key="delete_id")
+                else:  # ID-Bereich
+                    delete_range = st.text_input(
+                        "ID-Bereich (z.B. 2-6)",
+                        value="",
+                        help="Geben Sie einen Bereich im Format 'Start-Ende' ein, z.B. '2-6'"
+                    )
+                
                 delete_submit = st.form_submit_button("Konfiguration löschen")
-
+            
             if delete_submit:
-                success = delete_dataset(delete_id)
-
-                if success:
-                    st.success(f"Konfiguration mit ID {delete_id} gelöscht!")
-                    time.sleep(1)
-                    st.rerun()
-                else:
-                    st.error(
-                        f"Keine Konfiguration mit ID {delete_id} gefunden.")
+                if delete_option == "Einzel-ID":
+                    success = delete_dataset(delete_id)
+                    
+                    if success:
+                        st.success(f"Konfiguration mit ID {delete_id} gelöscht!")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.error(f"Keine Konfiguration mit ID {delete_id} gefunden.")
+                else:  # ID-Bereich
+                    try:
+                        # Parse the range
+                        if "-" in delete_range:
+                            start_id, end_id = map(int, delete_range.split("-"))
+                            
+                            if start_id > end_id:
+                                st.error("Start-ID muss kleiner oder gleich End-ID sein.")
+                            else:
+                                deleted_count = delete_dataset_range(start_id, end_id)
+                                
+                                if deleted_count > 0:
+                                    st.success(f"{deleted_count} Konfiguration(en) im Bereich {start_id}-{end_id} gelöscht!")
+                                    time.sleep(1)
+                                    st.rerun()
+                                else:
+                                    st.warning(f"Keine Konfigurationen im Bereich {start_id}-{end_id} gefunden.")
+                        else:
+                            st.error("Ungültiges Format. Bitte geben Sie den Bereich im Format 'Start-Ende' ein, z.B. '2-6'.")
+                    except ValueError:
+                        st.error("Ungültiges Format. Bitte geben Sie gültige Zahlen ein.")
 
         # Display the saved datasets in a table below the forms
         st.subheader("Liste der gespeicherten Konfigurationen")
