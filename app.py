@@ -18,33 +18,25 @@ st.set_page_config(
     layout="wide",
 )
 
-# Add custom CSS for dice animation
+# Add custom CSS for a simpler dice animation
 st.markdown("""
 <style>
-@keyframes dice-roll {
-    0% { transform: rotate(0deg) translateY(0); font-size: 2em; }
-    25% { transform: rotate(180deg) translateY(-20px); font-size: 3em; }
-    50% { transform: rotate(360deg) translateY(0); font-size: 4em; }
-    75% { transform: rotate(540deg) translateY(-20px); font-size: 3em; }
-    100% { transform: rotate(720deg) translateY(0); font-size: 2em; }
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
 }
 
-.dice-animation {
+.dice-icon {
+    font-size: 3em;
     display: inline-block;
-    animation: dice-roll 1.5s ease-in-out;
+    animation: pulse 0.7s infinite;
 }
 
 .dice-container {
     text-align: center;
     padding: 20px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dice-icon {
-    font-size: 2em;
+    height: 90px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -242,7 +234,7 @@ if reset_button:
     # Show the animated dice
     reset_dice_container.markdown("""
     <div class="dice-container">
-        <div class="dice-icon dice-animation">🎲</div>
+        <div class="dice-icon">🎲</div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -275,7 +267,7 @@ if generate_button:
     # Show the animated dice
     dice_container.markdown("""
     <div class="dice-container">
-        <div class="dice-icon dice-animation">🎲</div>
+        <div class="dice-icon">🎲</div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -433,7 +425,7 @@ try:
                 # Show the animated dice
                 load_dice_container.markdown("""
                 <div class="dice-container">
-                    <div class="dice-icon dice-animation">🎲</div>
+                    <div class="dice-icon">🎲</div>
                 </div>
                 """, unsafe_allow_html=True)
                 
@@ -498,7 +490,7 @@ try:
                 # Show the animated dice
                 delete_dice_container.markdown("""
                 <div class="dice-container">
-                    <div class="dice-icon dice-animation">🎲</div>
+                    <div class="dice-icon">🎲</div>
                 </div>
                 """, unsafe_allow_html=True)
                 
