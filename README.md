@@ -57,6 +57,7 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 - Wählen Sie die gewünschte Locale aus (beeinflusst das Format der generierten Daten)
 - Verwenden Sie optional einen Zufallsseed für reproduzierbare Ergebnisse
 - Klicken Sie auf "Daten generieren", um den Prozess zu starten
+- Nutzen Sie den "Zurücksetzen" Button, um die Datenvorschau zu löschen und von vorne zu beginnen
 
 #### 3. Daten exportieren
 

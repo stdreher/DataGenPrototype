@@ -189,9 +189,21 @@ for i, (category, fields) in enumerate(field_categories.items()):
                                 key=f"{field}_{param}"
                             )
 
-# Generate button
+# Generate button and reset button
 st.header("2. Daten generieren und Vorschau anzeigen")
-generate_button = st.button("Daten generieren", type="primary", use_container_width=True)
+col1, col2 = st.columns([3, 1])
+with col1:
+    generate_button = st.button("Daten generieren", type="primary", use_container_width=True)
+with col2:
+    reset_button = st.button("Zurücksetzen", type="secondary", use_container_width=True)
+
+# Handle reset button
+if reset_button:
+    # Clear generated data if it exists
+    if 'generated_df' in st.session_state:
+        del st.session_state['generated_df']
+        st.success("Datenvorschau wurde zurückgesetzt!")
+        st.rerun()
 
 # Check if any fields are selected
 selected_field_names = [f for f, v in st.session_state.selected_fields.items() if v]
