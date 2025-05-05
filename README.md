@@ -8,9 +8,10 @@ Der Testdaten Generator ist ein Tool zur Erstellung synthetischer Testdaten für
 
 - **Flexible Datengenerierung**: Generieren Sie synthetische Daten mit anpassbaren Feldern und Formaten
 - **Feldkonfiguration**: Passen Sie Parameter für jedes Feld an (z.B. Passwortlänge, Zahleneinschluss usw.)
-- **Datenexport**: Exportieren Sie generierte Daten als CSV oder JSON
+- **Datenexport**: Exportieren Sie generierte Daten als CSV, JSON oder SQL
 - **Datenbankanbindung**: Speichern und laden Sie Ihre Generierungskonfigurationen für die Wiederverwendung
 - **Mehrsprachig**: Vollständig in Deutsch mit Unterstützung für verschiedene Daten-Locales
+- **Animationen**: Würfelanimationen bei Datengenerierung, Zurücksetzen und Laden von Konfigurationen
 
 ## Technische Details
 
@@ -63,7 +64,8 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 #### 3. Daten exportieren
 
 - Sehen Sie sich die Vorschau der generierten Daten an
-- Wählen Sie das gewünschte Exportformat (CSV oder JSON)
+- Wählen Sie das gewünschte Exportformat (CSV, JSON oder SQL)
+- Bei SQL-Export können Sie den Tabellennamen anpassen und eine Vorschau des SQL-Scripts anzeigen lassen
 - Laden Sie die generierten Daten herunter
 
 #### 4. Konfigurationen speichern und laden
@@ -111,6 +113,23 @@ Der Generator unterstützt eine Vielzahl von Feldern, gruppiert in die folgenden
 - UUID
 - Farbe
 - Währungscode
+
+## SQL-Export-Funktionalität
+
+Der Generator verfügt über eine fortschrittliche SQL-Export-Funktion, die es ermöglicht, die generierten Testdaten direkt als SQL-Script zu exportieren:
+
+- **Datentyperkennung**: Die Anwendung erkennt automatisch die geeigneten SQL-Datentypen für Ihre Felder
+- **Anpassbarer Tabellenname**: Definieren Sie einen benutzerdefinierten Namen für die SQL-Tabelle
+- **Kompatibilität**: Die erzeugten SQL-Scripts sind mit PostgreSQL, MySQL, SQLite und den meisten anderen SQL-Dialekten kompatibel
+- **Vorschau**: Eine Vorschau des SQL-Scripts wird vor dem Download angezeigt
+- **Batch-Inserts**: Die Daten werden in Batches eingefügt, um die Effizienz zu verbessern
+- **Sicherheit**: Werte werden ordnungsgemäß für SQL escaped, um SQL-Injection zu verhindern
+
+Das erzeugte SQL-Script enthält:
+1. CREATE TABLE-Anweisung mit angemessenen Datentypen
+2. Optionale DELETE-Anweisung zum Leeren der Tabelle
+3. INSERT-Anweisungen für alle Datensätze
+4. Dokumentierende Kommentare mit Zeitstempel
 
 ## Datenbank-Funktionalität
 
