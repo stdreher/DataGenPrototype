@@ -48,7 +48,8 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 #### 1. Felder auswählen und konfigurieren
 
 - Wählen Sie die gewünschten Felder aus den verschiedenen Kategorien (Identität, Adresse, Kontakt usw.)
-- Konfigurieren Sie die Parameter für jedes Feld nach Ihren Anforderungen
+- Alle Felder sind standardmäßig deaktiviert, so dass Sie nur die benötigten Felder auswählen können
+- Konfigurieren Sie die Parameter für jedes ausgewählte Feld nach Ihren Anforderungen
 - Aktivieren Sie die Permutation für einzelne Felder, um die Daten zufällig zu mischen
 
 #### 2. Daten generieren

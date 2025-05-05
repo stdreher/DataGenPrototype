@@ -79,17 +79,7 @@ field_cols = st.columns(3)
 
 # Initialize selected fields in session state if not present
 if 'selected_fields' not in st.session_state:
-    st.session_state.selected_fields = {
-        "username": True,
-        "email": True,
-        "password": True, 
-        "full_name": True,
-        "street_address": True,
-        "city": True,
-        "zip_code": True,
-        "country": True,
-        "phone_number": True
-    }
+    st.session_state.selected_fields = {field: False for field in field_definitions.keys()}
 
 # Group fields by category for better organization
 field_categories = {
