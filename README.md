@@ -1,172 +1,43 @@
-# 🎲 Testdaten Generator (Test Data Generator)
+# 🎲 Test Data Generator / Testdaten Generator
 
-Ein Streamlit-basierter Test-Datengenerator mit einer Benutzeroberfläche zur Spezifikation und zufälligen Permutation von Webportal-Benutzerdaten.
+A Streamlit-based tool for generating synthetic test data with a user-friendly interface.
 
-## Funktionsübersicht
+## Language / Sprache
 
-Der Testdaten Generator ist ein Tool zur Erstellung synthetischer Testdaten für Webportale und Anwendungen. Es bietet folgende Hauptfunktionen:
+This documentation is available in two languages:
+Diese Dokumentation ist in zwei Sprachen verfügbar:
 
-- **Flexible Datengenerierung**: Generieren Sie synthetische Daten mit anpassbaren Feldern und Formaten
-- **Feldkonfiguration**: Passen Sie Parameter für jedes Feld an (z.B. Passwortlänge, Zahleneinschluss usw.)
-- **Datenexport**: Exportieren Sie generierte Daten als CSV, JSON oder SQL
-- **Datenbankanbindung**: Speichern und laden Sie Ihre Generierungskonfigurationen für die Wiederverwendung
-- **Mehrsprachig**: Vollständig in Deutsch mit Unterstützung für verschiedene Daten-Locales
-- **Animationen**: Würfelanimationen bei Datengenerierung, Zurücksetzen und Laden von Konfigurationen
+- [English Documentation](README_ENG.md)
+- [Deutsche Dokumentation](README_GER.md)
 
-## Technische Details
+## Overview / Übersicht
 
-Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
+The Test Data Generator is a comprehensive tool designed to create high-quality synthetic data for testing web applications and databases. It offers a wide range of field types, flexible configuration options, and multiple export formats.
 
-- **Streamlit**: Benutzeroberfläche und Anwendungsrahmen
-- **Pandas**: Datenverarbeitung und -manipulation
-- **Faker**: Generierung synthetischer Daten
-- **SQLAlchemy**: Datenbankinteraktion
-- **PostgreSQL**: Persistente Speicherung von Konfigurationen
+Der Testdaten Generator ist ein umfassendes Tool zur Erstellung hochwertiger synthetischer Daten für das Testen von Webanwendungen und Datenbanken. Er bietet eine breite Palette von Feldtypen, flexible Konfigurationsoptionen und mehrere Exportformate.
 
-## Anleitung
+### Key Features / Hauptfunktionen
 
-### Installation und Start
+- Generate data for over 20 different field types
+- Configure parameters for each field
+- Export to CSV, JSON, or SQL formats
+- Save and load generation configurations
+- Animated interface with dice roll effects
+- Multilingual support (German UI, multiple data locales)
 
-1. Stellen Sie sicher, dass Python 3.11 oder höher installiert ist
-2. Klonen Sie das Repository
-3. Installieren Sie die erforderlichen Pakete:
-   ```
-   pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary
-   ```
-4. Starten Sie die Anwendung: `streamlit run app.py`
+### Screenshots / Bildschirmfotos
 
-### Abhängigkeiten
+*Screenshots will be added here / Bildschirmfotos werden hier hinzugefügt*
 
-- **streamlit**: Version 1.35.0 oder höher
-- **pandas**: Version 2.2.0 oder höher
-- **numpy**: Version 1.26.0 oder höher
-- **faker**: Version 37.0.0 oder höher
-- **sqlalchemy**: Version 2.0.35 oder höher
-- **psycopg2-binary**: Version 2.9.9 oder höher
+## Quick Start / Schnellstart
 
-### Verwendung
+```bash
+# Install dependencies / Abhängigkeiten installieren
+pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary
 
-#### 1. Felder auswählen und konfigurieren
+# Start the application / Anwendung starten
+streamlit run app.py
+```
 
-- Wählen Sie die gewünschten Felder aus den verschiedenen Kategorien (Identität, Adresse, Kontakt usw.)
-- Alle Felder sind standardmäßig deaktiviert, so dass Sie nur die benötigten Felder auswählen können
-- Konfigurieren Sie die Parameter für jedes ausgewählte Feld nach Ihren Anforderungen
-- Aktivieren Sie die Permutation für einzelne Felder, um die Daten zufällig zu mischen
-
-#### 2. Daten generieren
-
-- Geben Sie die Anzahl der zu generierenden Datensätze an
-- Wählen Sie die gewünschte Locale aus (beeinflusst das Format der generierten Daten)
-- Verwenden Sie optional einen Zufallsseed für reproduzierbare Ergebnisse
-- Klicken Sie auf "Daten generieren", um den Prozess zu starten
-- Nutzen Sie den "Zurücksetzen" Button, um die Datenvorschau zu löschen und von vorne zu beginnen
-
-#### 3. Daten exportieren
-
-- Sehen Sie sich die Vorschau der generierten Daten an
-- Wählen Sie das gewünschte Exportformat (CSV, JSON oder SQL)
-- Bei SQL-Export können Sie den Tabellennamen anpassen und eine Vorschau des SQL-Scripts anzeigen lassen
-- Laden Sie die generierten Daten herunter
-
-#### 4. Konfigurationen speichern und laden
-
-- Speichern Sie Ihre bevorzugten Generierungskonfigurationen in der Datenbank
-- Eine automatische Zusammenfassung mit 1. Anzahl der Datensätze, 2. Daten-Locale und 3. Exportformat wird im Beschreibungsfeld angezeigt
-- Laden Sie gespeicherte Konfigurationen mit dem Formular "Konfiguration laden" 
-- Löschen Sie nicht mehr benötigte Konfigurationen mit dem Formular "Konfiguration löschen"
-- Nutzen Sie die ID aus der darunter angezeigten Liste der gespeicherten Konfigurationen
-
-## Verfügbare Datenfelder
-
-Der Generator unterstützt eine Vielzahl von Feldern, gruppiert in die folgenden Kategorien:
-
-### Identität
-- Benutzername
-- E-Mail
-- Passwort
-- Vollständiger Name
-
-### Adresse
-- Straßenadresse
-- Stadt
-- Bundesland
-- Postleitzahl
-- Land
-
-### Kontakt
-- Telefonnummer
-- Berufsbezeichnung
-- Unternehmen
-
-### Persönlich
-- Geburtsdatum
-- Geschlecht
-- Kreditkarte
-
-### Internet
-- User-Agent
-- IPv4-Adresse
-- IPv6-Adresse
-- MAC-Adresse
-
-### Sonstiges
-- UUID
-- Farbe
-- Währungscode
-
-## SQL-Export-Funktionalität
-
-Der Generator verfügt über eine fortschrittliche SQL-Export-Funktion, die es ermöglicht, die generierten Testdaten direkt als SQL-Script zu exportieren:
-
-- **Datentyperkennung**: Die Anwendung erkennt automatisch die geeigneten SQL-Datentypen für Ihre Felder
-- **Anpassbarer Tabellenname**: Definieren Sie einen benutzerdefinierten Namen für die SQL-Tabelle
-- **Kompatibilität**: Die erzeugten SQL-Scripts sind mit PostgreSQL, MySQL, SQLite und den meisten anderen SQL-Dialekten kompatibel
-- **Vorschau**: Eine Vorschau des SQL-Scripts wird vor dem Download angezeigt
-- **Batch-Inserts**: Die Daten werden in Batches eingefügt, um die Effizienz zu verbessern
-- **Sicherheit**: Werte werden ordnungsgemäß für SQL escaped, um SQL-Injection zu verhindern
-
-Das erzeugte SQL-Script enthält:
-1. CREATE TABLE-Anweisung mit angemessenen Datentypen
-2. Optionale DELETE-Anweisung zum Leeren der Tabelle
-3. INSERT-Anweisungen für alle Datensätze
-4. Dokumentierende Kommentare mit Zeitstempel
-
-## Datenbank-Funktionalität
-
-Die Anwendung verwendet eine PostgreSQL-Datenbank zur Speicherung von Generierungskonfigurationen. Folgende Operationen werden unterstützt:
-
-- **Speichern**: Speichern Sie die aktuelle Konfiguration mit Name und Beschreibung
-- **Laden**: Laden Sie eine gespeicherte Konfiguration anhand ihrer ID
-- **Löschen**: Entfernen Sie nicht mehr benötigte Konfigurationen
-- **Auflisten**: Zeigen Sie alle gespeicherten Konfigurationen an
-
-## Projektstruktur
-
-- `app.py`: Hauptanwendung mit Streamlit-Benutzeroberfläche
-- `data_generator.py`: Kernfunktionen zur Datengenerierung
-- `field_definitions.py`: Definitionen und Parameter für alle unterstützten Felder
-- `export_utils.py`: Hilfsfunktionen für den Datenexport
-- `database_utils.py`: Funktionen für die Datenbankinteraktion
-- `.streamlit/config.toml`: Streamlit-Konfiguration
-
-## Anpassung und Erweiterung
-
-### Hinzufügen neuer Felder
-
-Um ein neues Feld hinzuzufügen:
-
-1. Definieren Sie eine Generator-Funktion in `field_definitions.py`
-2. Fügen Sie die Felddefinition zum `field_definitions`-Dictionary hinzu
-3. Ordnen Sie das Feld einer Kategorie in `field_categories` in `app.py` zu
-
-### Unterstützung für neue Exportformate
-
-Um ein neues Exportformat hinzuzufügen:
-
-1. Implementieren Sie eine Exportfunktion in `export_utils.py`
-2. Fügen Sie das Format zur Auswahlmöglichkeit in `app.py` hinzu
-3. Behandeln Sie das neue Format im Export-Abschnitt
-
-## Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe die LICENSE-Datei für Details.
+For detailed instructions, please refer to the language-specific documentation.
+Für detaillierte Anweisungen, bitte beziehen Sie sich auf die sprachspezifische Dokumentation.
