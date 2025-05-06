@@ -47,7 +47,8 @@ st.markdown("""
     font-size: 2em;
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+            unsafe_allow_html=True)
 
 # Title and introduction
 st.title("🎲 Testdaten Generator")
@@ -91,7 +92,9 @@ with st.sidebar:
                                value=42)
 
     # Export format
-    export_format = st.radio("Exportformat", options=["CSV", "JSON", "SQL"], index=0)
+    export_format = st.radio("Exportformat",
+                             options=["CSV", "JSON", "SQL"],
+                             index=0)
 
     st.divider()
 
@@ -238,21 +241,22 @@ with col2:
 if reset_button:
     # Create a container for the dice animation
     reset_dice_container = st.empty()
-    
+
     # Show the animated dice
     reset_dice_container.markdown("""
     <div class="dice-container">
         <div class="dice-icon dice-animation">🎲</div>
     </div>
-    """, unsafe_allow_html=True)
-    
+    """,
+                                  unsafe_allow_html=True)
+
     # Clear generated data if it exists
     if 'generated_df' in st.session_state:
         del st.session_state['generated_df']
-        
+
         # Clear the animation container
         reset_dice_container.empty()
-        
+
         st.success("🎲 Datenvorschau wurde zurückgesetzt!")
         time.sleep(0.5)
         st.rerun()
@@ -271,14 +275,15 @@ if not selected_field_names:
 if generate_button:
     # Create a container for the dice animation
     dice_container = st.empty()
-    
+
     # Show the animated dice
     dice_container.markdown("""
     <div class="dice-container">
         <div class="dice-icon dice-animation">🎲</div>
     </div>
-    """, unsafe_allow_html=True)
-    
+    """,
+                            unsafe_allow_html=True)
+
     with st.spinner("Daten werden generiert..."):
         # Get the fields that are selected
         selected_fields_config = {
@@ -304,7 +309,7 @@ if generate_button:
         except Exception as e:
             # Clear the animation container
             dice_container.empty()
-            
+
             st.error(f"Fehler bei der Datengenerierung: {str(e)}")
             st.stop()
 
@@ -339,7 +344,7 @@ if 'generated_df' in st.session_state:
         st.header("3. Generierte Daten herunterladen")
 
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        
+
         if export_format == "CSV":
             csv_data = export_to_csv(df)
             st.download_button(label="CSV herunterladen",
@@ -356,20 +361,23 @@ if 'generated_df' in st.session_state:
                                use_container_width=True)
         else:  # SQL
             # Add option for table name
-            table_name = st.text_input("Tabellen-Name (für SQL-Script)", value="testdaten")
-            
+            table_name = st.text_input("Tabellen-Name (für SQL-Script)",
+                                       value="testdaten")
+
             # Display SQL dialect info
-            st.info("Das SQL-Script ist mit PostgreSQL, MySQL, SQLite und den meisten anderen SQL-Dialekten kompatibel.")
-            
+            st.info(
+                "Das SQL-Script ist mit PostgreSQL, MySQL, SQLite und den meisten anderen SQL-Dialekten kompatibel."
+            )
+
             # Generate SQL
             sql_data = export_to_sql(df, table_name=table_name)
-            
+
             # Preview SQL (first 20 lines)
             with st.expander("SQL-Vorschau anzeigen"):
                 sql_preview = "\n".join(sql_data.split("\n")[:20]) + "\n..."
                 st.code(sql_preview, language="sql")
                 st.caption("Nur die ersten 20 Zeilen werden angezeigt.")
-            
+
             st.download_button(label="SQL herunterladen",
                                data=sql_data,
                                file_name=f"testdaten_{timestamp}.sql",
@@ -381,9 +389,9 @@ if 'generated_df' in st.session_state:
         st.header("4. Konfiguration speichern")
 
         # Create a summary of the configuration with the specified format
-        config_summary = f"1. {num_records}\n"
-        config_summary += f"2. {locale}\n"
-        config_summary += f"3. {export_format}"
+        config_summary = f"1. Anzahl Datensätze: {num_records}\n"
+        config_summary += f"2. Datenvorlage: {locale}\n"
+        config_summary += f"3. Exportformat: {export_format}"
 
         save_form = st.form(key="save_form")
         with save_form:
@@ -450,14 +458,15 @@ try:
             if load_submit:
                 # Create a container for the dice animation
                 load_dice_container = st.empty()
-                
+
                 # Show the animated dice
                 load_dice_container.markdown("""
                 <div class="dice-container">
                     <div class="dice-icon dice-animation">🎲</div>
                 </div>
-                """, unsafe_allow_html=True)
-                
+                """,
+                                             unsafe_allow_html=True)
+
                 dataset = get_dataset_by_id(load_id)
 
                 if dataset is None:
@@ -477,7 +486,7 @@ try:
 
                     # Clear the animation container
                     load_dice_container.empty()
-                    
+
                     # Show success message
                     st.success(
                         f"🎲 Konfiguration '{dataset['name']}' geladen! Die Seite wird neu geladen..."
@@ -492,12 +501,10 @@ try:
             delete_form = st.form(key="delete_form")
             with delete_form:
                 st.markdown("### Konfiguration löschen")
-                delete_option = st.radio(
-                    "Löschen nach:",
-                    options=["Einzel-ID", "ID-Bereich"],
-                    horizontal=True
-                )
-                
+                delete_option = st.radio("Löschen nach:",
+                                         options=["Einzel-ID", "ID-Bereich"],
+                                         horizontal=True)
+
                 if delete_option == "Einzel-ID":
                     delete_id = st.number_input("Konfigurations-ID",
                                                 min_value=1,
@@ -507,64 +514,81 @@ try:
                     delete_range = st.text_input(
                         "ID-Bereich (z.B. 2-6)",
                         value="",
-                        help="Geben Sie einen Bereich im Format 'Start-Ende' ein, z.B. '2-6'"
+                        help=
+                        "Geben Sie einen Bereich im Format 'Start-Ende' ein, z.B. '2-6'"
                     )
-                
+
                 delete_submit = st.form_submit_button("Konfiguration löschen")
-            
+
             if delete_submit:
                 # Create a container for the dice animation
                 delete_dice_container = st.empty()
-                
+
                 # Show the animated dice
                 delete_dice_container.markdown("""
                 <div class="dice-container">
                     <div class="dice-icon dice-animation">🎲</div>
                 </div>
-                """, unsafe_allow_html=True)
-                
+                """,
+                                               unsafe_allow_html=True)
+
                 if delete_option == "Einzel-ID":
                     success = delete_dataset(delete_id)
-                    
+
                     # Clear the animation container
                     delete_dice_container.empty()
-                    
+
                     if success:
-                        st.success(f"🎲 Konfiguration mit ID {delete_id} gelöscht!")
+                        st.success(
+                            f"🎲 Konfiguration mit ID {delete_id} gelöscht!")
                         time.sleep(1)
                         st.rerun()
                     else:
-                        st.error(f"Keine Konfiguration mit ID {delete_id} gefunden.")
+                        st.error(
+                            f"Keine Konfiguration mit ID {delete_id} gefunden."
+                        )
                 else:  # ID-Bereich
                     try:
                         # Parse the range
                         if "-" in delete_range:
-                            start_id, end_id = map(int, delete_range.split("-"))
-                            
+                            start_id, end_id = map(int,
+                                                   delete_range.split("-"))
+
                             if start_id > end_id:
                                 # Clear the animation container
                                 delete_dice_container.empty()
-                                st.error("Start-ID muss kleiner oder gleich End-ID sein.")
+                                st.error(
+                                    "Start-ID muss kleiner oder gleich End-ID sein."
+                                )
                             else:
-                                deleted_count = delete_dataset_range(start_id, end_id)
-                                
+                                deleted_count = delete_dataset_range(
+                                    start_id, end_id)
+
                                 # Clear the animation container
                                 delete_dice_container.empty()
-                                
+
                                 if deleted_count > 0:
-                                    st.success(f"🎲 {deleted_count} Konfiguration(en) im Bereich {start_id}-{end_id} gelöscht!")
+                                    st.success(
+                                        f"🎲 {deleted_count} Konfiguration(en) im Bereich {start_id}-{end_id} gelöscht!"
+                                    )
                                     time.sleep(1)
                                     st.rerun()
                                 else:
-                                    st.warning(f"Keine Konfigurationen im Bereich {start_id}-{end_id} gefunden.")
+                                    st.warning(
+                                        f"Keine Konfigurationen im Bereich {start_id}-{end_id} gefunden."
+                                    )
                         else:
                             # Clear the animation container
                             delete_dice_container.empty()
-                            st.error("Ungültiges Format. Bitte geben Sie den Bereich im Format 'Start-Ende' ein, z.B. '2-6'.")
+                            st.error(
+                                "Ungültiges Format. Bitte geben Sie den Bereich im Format 'Start-Ende' ein, z.B. '2-6'."
+                            )
                     except ValueError:
                         # Clear the animation container
                         delete_dice_container.empty()
-                        st.error("Ungültiges Format. Bitte geben Sie gültige Zahlen ein.")
+                        st.error(
+                            "Ungültiges Format. Bitte geben Sie gültige Zahlen ein."
+                        )
 
         # Display the saved datasets in a table below the forms
         st.subheader("Liste der gespeicherten Konfigurationen")
