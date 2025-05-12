@@ -2,6 +2,27 @@
 
 A Streamlit-based test data generator with a user interface for specification and random permutation of web portal user data.
 
+## Development
+
+### Testing
+The project includes a comprehensive test suite using pytest:
+```bash
+# Run all tests
+python -m pytest
+
+# Run tests with coverage report
+python -m pytest --cov=. --cov-report=term-missing
+```
+
+### Code Quality
+Code quality is maintained using Black, Flake8, and pre-commit hooks:
+```bash
+# Run the code quality checks
+./scripts/run_code_checks.sh
+```
+
+For more information about code quality tools, see [Code Quality Documentation](docs/code_quality.md).
+
 ## Feature Overview
 
 The Test Data Generator is a tool for creating synthetic test data for web portals and applications. It offers the following main features:

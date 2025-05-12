@@ -10,6 +10,27 @@ Diese Dokumentation ist in zwei Sprachen verfügbar:
 - [English Documentation](README_ENG.md)
 - [Deutsche Dokumentation](README_GER.md)
 
+## Development
+
+### Testing
+The project includes a comprehensive test suite using pytest:
+```bash
+# Run all tests
+python -m pytest
+
+# Run tests with coverage report
+python -m pytest --cov=. --cov-report=term-missing
+```
+
+### Code Quality
+Code quality is maintained using Black, Flake8, and pre-commit hooks:
+```bash
+# Run the code quality checks
+./scripts/run_code_checks.sh
+```
+
+For more information about code quality tools, see [Code Quality Documentation](docs/code_quality.md).
+
 ## Overview / Übersicht
 
 The Test Data Generator is a comprehensive tool designed to create high-quality synthetic data for testing web applications and databases. It offers a wide range of field types, flexible configuration options, and multiple export formats.
