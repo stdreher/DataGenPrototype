@@ -8,8 +8,13 @@
 #   ./scripts/run_code_checks.sh --all  # Run all tests
 
 # Get the directory of this script and set the root directory
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Debug: Print the calculated paths
+echo "Script directory: $SCRIPT_DIR"
+echo "Root directory: $ROOT_DIR"
+echo ""
 
 # Check command line arguments
 RUN_ALL_TESTS=0
@@ -61,7 +66,7 @@ if [ $RUN_TESTS -eq 1 ]; then
       exit 1; 
     }
     echo "Sample tests passed!"
-    
+
     echo -e "\nTo run all tests, use: $0 --all"
   fi
 else
