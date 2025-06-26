@@ -345,7 +345,7 @@ def get_dataset_by_id(dataset_id):
 
             return dataset
 
-        except Exception as e:
+        except Exception:
             # If database error, check if we can provide a sample dataset
             if dataset_id in sample_datasets:
                 return sample_datasets[dataset_id]
