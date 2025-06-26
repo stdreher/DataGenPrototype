@@ -1,6 +1,6 @@
 # 🎲 Testdaten Generator (Test Data Generator)
 
-Ein Streamlit-basierter Test-Datengenerator mit einer Benutzeroberfläche zur Spezifikation und zufälligen Permutation von Webportal-Benutzerdaten.
+Ein Streamlit-basierter Test-Datengenerator mit einer Benutzeroberfläche zur Spezifikation und zufälligen Permutation von Webportal-Benutzerdaten sowie DSGVO-konformen Pseudonymisierungsfunktionen.
 
 ## Funktionsübersicht
 
@@ -10,8 +10,10 @@ Der Testdaten Generator ist ein Tool zur Erstellung synthetischer Testdaten für
 - **Feldkonfiguration**: Passen Sie Parameter für jedes Feld an (z.B. Passwortlänge, Zahleneinschluss usw.)
 - **Datenexport**: Exportieren Sie generierte Daten als CSV, JSON oder SQL
 - **Datenbankanbindung**: Speichern und laden Sie Ihre Generierungskonfigurationen für die Wiederverwendung
+- **DSGVO-Konformität**: Datenpseudonymisierungsfunktionen mit mehreren Methoden
+- **Datenschutz**: Direkter Vergleich von originalen und pseudonymisierten Daten
 - **Mehrsprachig**: Vollständig in Deutsch mit Unterstützung für verschiedene Daten-Locales
-- **Animationen**: Würfelanimationen bei Datengenerierung, Zurücksetzen und Laden von Konfigurationen
+- **Animationen**: Würfel- und Schloss-Animationen für Datenoperationen
 
 ## Technische Details
 
@@ -22,6 +24,7 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 - **Faker**: Generierung synthetischer Daten
 - **SQLAlchemy**: Datenbankinteraktion
 - **PostgreSQL**: Persistente Speicherung von Konfigurationen
+- **Hashlib**: Sichere Datenpseudonymisierung
 
 ## Anleitung
 
@@ -31,9 +34,9 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 2. Klonen Sie das Repository
 3. Installieren Sie die erforderlichen Pakete:
    ```
-   pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary
+   pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary openpyxl
    ```
-4. Starten Sie die Anwendung: `streamlit run app.py`
+4. Starten Sie die Anwendung: `streamlit run Home.py`
 
 ### Abhängigkeiten
 
@@ -43,6 +46,7 @@ Der Testdaten Generator wurde mit folgenden Technologien entwickelt:
 - **faker**: Version 37.0.0 oder höher
 - **sqlalchemy**: Version 2.0.35 oder höher
 - **psycopg2-binary**: Version 2.9.9 oder höher
+- **openpyxl**: Version 3.1.2 oder höher
 
 ### Verwendung
 
@@ -142,12 +146,40 @@ Die Anwendung verwendet eine PostgreSQL-Datenbank zur Speicherung von Generierun
 
 ## Projektstruktur
 
-- `app.py`: Hauptanwendung mit Streamlit-Benutzeroberfläche
+- `Home.py`: Haupteinstiegspunkt der Anwendung mit Navigation
+- `pages/1_Testdaten_Generator.py`: Oberfläche zur Testdatengenerierung
+- `pages/2_Pseudonymizer.py`: Oberfläche zur Datenpseudonymisierung
 - `data_generator.py`: Kernfunktionen zur Datengenerierung
 - `field_definitions.py`: Definitionen und Parameter für alle unterstützten Felder
 - `export_utils.py`: Hilfsfunktionen für den Datenexport
 - `database_utils.py`: Funktionen für die Datenbankinteraktion
+- `pseudonymize_utils.py`: Funktionen für DSGVO-konforme Datenpseudonymisierung
 - `.streamlit/config.toml`: Streamlit-Konfiguration
+
+## Datenpseudonymisierungsfunktion
+
+Die Anwendung enthält ein robustes DSGVO-konformes Datenpseudonymisierungssystem, das folgende Funktionen bietet:
+
+- **Mehrere Methoden**: Wählen Sie aus verschiedenen Pseudonymisierungstechniken:
+  - **Hash**: Irreversible SHA-256-Hashwerte sensibler Daten
+  - **Maskieren**: Teilweise Maskierung von Daten (z.B. "jo**********@example.com")
+  - **Ersetzen**: Ersetzung durch realistische, aber gefälschte Werte
+  - **Versatz**: Verschiebung numerischer Werte um einen konstanten Betrag
+
+- **Datei-Upload**: Laden Sie Datendateien in CSV-, Excel- oder JSON-Formaten hoch
+- **Spaltenauswahl**: Wählen Sie, welche Spalten pseudonymisiert werden sollen und welche Methoden anzuwenden sind
+- **Direkter Vergleich**: Sehen Sie originale und pseudonymisierte Daten nebeneinander
+- **Exportoptionen**: Laden Sie die pseudonymisierten Daten in verschiedenen Formaten herunter
+- **Intelligente Erkennung**: Automatische Vorschläge für geeignete Pseudonymisierungsmethoden
+
+### Verwendung des Pseudonymisierers
+
+1. Navigieren Sie zur Pseudonymizer-Seite
+2. Laden Sie eine Datendatei mit sensiblen Informationen hoch
+3. Wählen Sie die zu pseudonymisierenden Spalten aus
+4. Wählen Sie eine Pseudonymisierungsmethode für jede Spalte
+5. Wenden Sie die Pseudonymisierung an
+6. Überprüfen Sie die Ergebnisse und exportieren Sie sie, wenn Sie zufrieden sind
 
 ## Anpassung und Erweiterung
 
@@ -157,15 +189,23 @@ Um ein neues Feld hinzuzufügen:
 
 1. Definieren Sie eine Generator-Funktion in `field_definitions.py`
 2. Fügen Sie die Felddefinition zum `field_definitions`-Dictionary hinzu
-3. Ordnen Sie das Feld einer Kategorie in `field_categories` in `app.py` zu
+3. Ordnen Sie das Feld einer Kategorie in der entsprechenden Seiten-Datei zu
 
 ### Unterstützung für neue Exportformate
 
 Um ein neues Exportformat hinzuzufügen:
 
 1. Implementieren Sie eine Exportfunktion in `export_utils.py`
-2. Fügen Sie das Format zur Auswahlmöglichkeit in `app.py` hinzu
+2. Fügen Sie das Format zur Auswahlmöglichkeit in der Benutzeroberfläche hinzu
 3. Behandeln Sie das neue Format im Export-Abschnitt
+
+### Hinzufügen neuer Pseudonymisierungsmethoden
+
+Um eine neue Pseudonymisierungsmethode hinzuzufügen:
+
+1. Implementieren Sie die Methode in `pseudonymize_utils.py`
+2. Fügen Sie die Methode zur `get_pseudonymization_methods()`-Funktion hinzu
+3. Aktualisieren Sie die Pseudonymisierungsoberfläche in `pages/2_Pseudonymizer.py`
 
 ## Lizenz
 

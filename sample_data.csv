@@ -1,0 +1,6 @@
+name,email,phone,birthdate,salary,address,company,customer_id
+Max Mustermann,max.mustermann@example.com,+49123456789,1980-05-15,65000,"Hauptstr. 1, 10115 Berlin",ABC GmbH,CUS-001
+Julia Schmidt,julia.schmidt@test.de,+49987654321,1992-11-23,72000,"Bahnhofstr. 42, 60329 Frankfurt",XYZ AG,CUS-002
+Thomas Weber,tweber@firma.de,+4917612345678,1975-03-10,58000,"Marktplatz 5, 80331 München",Tech Solutions GmbH,CUS-003
+Anna Becker,anna.b@mail.com,+49176987654321,1988-07-22,61500,"Schlossallee 10, 70173 Stuttgart",Consulting Partners,CUS-004
+Stefan Huber,s.huber@example.org,+4915112345678,1983-09-05,73200,"Kaiserstr. 15, 50667 Köln",Global Systems,CUS-005

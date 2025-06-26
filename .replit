@@ -2,7 +2,7 @@ modules = ["python-3.11", "postgresql-16"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["glibcLocales"]
+packages = ["glibcLocales", "nano"]
 
 [deployment]
 deploymentTarget = "autoscale"
@@ -26,7 +26,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pip install faker && streamlit run app.py --server.port 5000"
+args = "streamlit run Home.py --server.port 5000"
 waitForPort = 5000
 
 [[ports]]

@@ -1,6 +1,6 @@
 # 🎲 Test Data Generator / Testdaten Generator
 
-A Streamlit-based tool for generating synthetic test data with a user-friendly interface.
+A Streamlit-based tool for generating synthetic test data with a user-friendly interface and GDPR-compliant data pseudonymization capabilities.
 
 ## Language / Sprache
 
@@ -43,7 +43,9 @@ Der Testdaten Generator ist ein umfassendes Tool zur Erstellung hochwertiger syn
 - Configure parameters for each field
 - Export to CSV, JSON, or SQL formats
 - Save and load generation configurations
-- Animated interface with dice roll effects
+- GDPR-compliant data pseudonymization with multiple methods
+- Side-by-side comparison of original and pseudonymized data
+- Animated interface with dice roll and lock effects
 - Multilingual support (German UI, multiple data locales)
 
 ### Screenshots / Bildschirmfotos
@@ -54,10 +56,10 @@ Der Testdaten Generator ist ein umfassendes Tool zur Erstellung hochwertiger syn
 
 ```bash
 # Install dependencies / Abhängigkeiten installieren
-pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary
+pip install streamlit pandas numpy faker sqlalchemy openpyxl psycopg2-binary
 
 # Start the application / Anwendung starten
-streamlit run app.py
+streamlit run Home.py
 ```
 
 For detailed instructions, please refer to the language-specific documentation.

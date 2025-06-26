@@ -1,71 +1,96 @@
-# Code Quality Tools
+# Code Quality Checks for Test Data Generator
 
-This project uses several tools to maintain code quality:
+This document outlines the code quality checks implemented in this project and how to use them.
 
-## 1. Black (Code Formatter)
+## Overview
 
-Black is an opinionated code formatter that automatically formats Python code to comply with PEP 8.
+The Test Data Generator project uses several tools to maintain code quality:
 
-### Usage:
+1. **Black** - Code formatter that automatically formats Python code following a consistent style
+2. **Flake8** - Linter that checks for style issues, programming errors, and potential bugs
+3. **Pytest** - Testing framework for writing and running unit tests
+
+These tools can be run manually or automatically as git hooks before each commit.
+
+## Running Checks Manually
+
+### Option 1: Run Code Checks Script
+
+To run checks without committing:
+
 ```bash
-# Format all Python files
-black .
+# Run with sample tests (faster)
+./scripts/run_code_checks.sh
 
-# Check if files need formatting without actually changing them
-black . --check
+# Run with all tests
+./scripts/run_code_checks.sh --all
 ```
 
-## 2. Flake8 (Linter)
+This script will:
+- Format code with Black
+- Check for issues with Flake8
+- Run tests (either a sample or all tests)
 
-Flake8 is a tool that checks Python code against coding style (PEP 8) and programming errors.
+### Option 2: Run Individual Tools
 
-### Usage:
+Format code with Black:
 ```bash
-# Run linting checks
+black .
+```
+
+Check for issues with Flake8:
+```bash
 flake8
 ```
 
-## 3. pytest (Testing Framework)
-
-pytest is used for running unit tests and ensuring code correctness.
-
-### Usage:
+Run all tests:
 ```bash
-# Run all tests
 python -m pytest
-
-# Run tests with coverage report
-python -m pytest --cov=. --cov-report=term-missing
 ```
 
-## 4. pre-commit (Git Hooks Framework)
+## Git Hooks Setup
 
-pre-commit is used to manage and maintain Git hooks.
+Git hooks automatically run checks before each commit, preventing commits with formatting or test issues.
 
-### Setup:
+To set up git hooks:
+
 ```bash
-# Run the setup script
 ./scripts/setup_git_hooks.sh
 ```
 
-### Manual Usage:
+This will:
+1. Install pre-commit if needed
+2. Configure git hooks for the repository
+
+### What Gets Checked on Commit
+
+Before each commit, the following checks run automatically:
+- Black formatting on modified Python files
+- Flake8 linting on modified Python files
+- Pytest runs on the entire test suite
+
+If any check fails, the commit is rejected with an error message. Fix the issues and try committing again.
+
+### Skipping Hooks Temporarily
+
+In rare cases where you need to bypass checks (not recommended for normal use):
+
 ```bash
-# Run all checks on all files
-pre-commit run --all-files
-```
-
-## 5. Manual Check Script
-
-A convenience script that runs all code quality checks is provided.
-
-### Usage:
-```bash
-# Run all checks (formatting, linting, tests)
-./scripts/run_code_checks.sh
+git commit --no-verify -m "Your commit message"
 ```
 
 ## Configuration Files
 
-- `.pre-commit-config.yaml`: Configuration for pre-commit hooks
-- `pyproject.toml`: Configuration for Black and pytest
-- `setup.cfg`: Configuration for Flake8
+The project includes several configuration files:
+
+- `.pre-commit-config.yaml` - Configures pre-commit hooks
+- `pyproject.toml` - Contains Black and pytest configuration
+- `setup.cfg` - Contains Flake8 configuration
+
+## Best Practices
+
+1. Run `./scripts/run_code_checks.sh` before pushing changes
+2. Keep tests up to date with new features
+3. Maintain high test coverage
+4. Don't bypass git hooks except in rare circumstances
+5. Address all Flake8 warnings, don't suppress them without good reason

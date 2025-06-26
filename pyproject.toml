@@ -1,27 +1,21 @@
-[tool.black]
-line-length = 100
-target-version = ['py311']
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = "test_*.py"
-python_classes = "Test*"
-python_functions = "test_*"
-filterwarnings = [
-    "ignore::DeprecationWarning",
-    "ignore::PendingDeprecationWarning"
+[project]
+name = "testdaten-generator"
+version = "1.0.0"
+description = "Test data generator with pseudonymization capabilities"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit",
+    "pandas",
+    "numpy",
+    "faker",
+    "sqlalchemy",
+    "openpyxl",
 ]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.pytest]
+testpaths = ["tests"]
+pythonpath = ["."]

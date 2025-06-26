@@ -1,6 +1,6 @@
 # 🎲 Test Data Generator
 
-A Streamlit-based test data generator with a user interface for specification and random permutation of web portal user data.
+A Streamlit-based test data generator with a user interface for specification and random permutation of web portal user data, plus GDPR-compliant pseudonymization capabilities.
 
 ## Development
 
@@ -31,8 +31,10 @@ The Test Data Generator is a tool for creating synthetic test data for web porta
 - **Field Configuration**: Adjust parameters for each field (e.g., password length, number inclusion, etc.)
 - **Data Export**: Export generated data as CSV, JSON, or SQL
 - **Database Connection**: Save and load your generation configurations for reuse
+- **GDPR Compliance**: Data pseudonymization capabilities with multiple methods
+- **Data Protection**: Side-by-side comparison of original and pseudonymized data
 - **Multilingual**: Fully in German with support for various data locales
-- **Animations**: Dice roll animations for data generation, resetting, and loading configurations
+- **Animations**: Dice roll and lock animations for data operations
 
 ## Technical Details
 
@@ -43,6 +45,7 @@ The Test Data Generator was developed with the following technologies:
 - **Faker**: Synthetic data generation
 - **SQLAlchemy**: Database interaction
 - **PostgreSQL**: Persistent storage of configurations
+- **Hashlib**: Secure data pseudonymization
 
 ## Instructions
 
@@ -52,9 +55,9 @@ The Test Data Generator was developed with the following technologies:
 2. Clone the repository
 3. Install the required packages:
    ```
-   pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary
+   pip install streamlit pandas numpy faker sqlalchemy psycopg2-binary openpyxl
    ```
-4. Start the application: `streamlit run app.py`
+4. Start the application: `streamlit run Home.py`
 
 ### Dependencies
 
@@ -64,6 +67,7 @@ The Test Data Generator was developed with the following technologies:
 - **faker**: Version 37.0.0 or higher
 - **sqlalchemy**: Version 2.0.35 or higher
 - **psycopg2-binary**: Version 2.9.9 or higher
+- **openpyxl**: Version 3.1.2 or higher
 
 ### Usage
 
@@ -163,12 +167,40 @@ The application uses a PostgreSQL database to store generation configurations. T
 
 ## Project Structure
 
-- `app.py`: Main application with Streamlit user interface
+- `Home.py`: Main application entry point with navigation
+- `pages/1_Testdaten_Generator.py`: Test data generation interface
+- `pages/2_Pseudonymizer.py`: Data pseudonymization interface
 - `data_generator.py`: Core functions for data generation
 - `field_definitions.py`: Definitions and parameters for all supported fields
 - `export_utils.py`: Helper functions for data export
 - `database_utils.py`: Functions for database interaction
+- `pseudonymize_utils.py`: Functions for GDPR-compliant data pseudonymization
 - `.streamlit/config.toml`: Streamlit configuration
+
+## Data Pseudonymization Feature
+
+The application includes a robust GDPR-compliant data pseudonymization system that offers the following capabilities:
+
+- **Multiple Methods**: Choose from various pseudonymization techniques:
+  - **Hash**: Irreversible SHA-256 hashing of sensitive data
+  - **Mask**: Partial masking of data (e.g., "jo**********@example.com")
+  - **Replace**: Substitution with realistic but fake values
+  - **Offset**: Shifting numeric values by a constant amount
+
+- **File Upload**: Upload data files in CSV, Excel, or JSON formats
+- **Column Selection**: Choose which columns to pseudonymize and which methods to apply
+- **Side-by-Side Comparison**: View original and pseudonymized data together
+- **Export Options**: Download the pseudonymized data in various formats
+- **Smart Detection**: Automatic suggestions for appropriate pseudonymization methods
+
+### How to Use the Pseudonymizer
+
+1. Navigate to the Pseudonymizer page
+2. Upload a data file containing sensitive information
+3. Select the columns to pseudonymize
+4. Choose a pseudonymization method for each column
+5. Apply the pseudonymization
+6. Review the results and export if satisfied
 
 ## Customization and Extension
 
@@ -178,15 +210,23 @@ To add a new field:
 
 1. Define a generator function in `field_definitions.py`
 2. Add the field definition to the `field_definitions` dictionary
-3. Assign the field to a category in `field_categories` in `app.py`
+3. Assign the field to a category in the appropriate page file
 
 ### Support for New Export Formats
 
 To add a new export format:
 
 1. Implement an export function in `export_utils.py`
-2. Add the format to the selection options in `app.py`
+2. Add the format to the selection options in the interface
 3. Handle the new format in the export section
+
+### Adding New Pseudonymization Methods
+
+To add a new pseudonymization method:
+
+1. Implement the method in `pseudonymize_utils.py`
+2. Add the method to the `get_pseudonymization_methods()` function
+3. Update the pseudonymization interface in `pages/2_Pseudonymizer.py`
 
 ## License
 

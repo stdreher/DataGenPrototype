@@ -47,8 +47,7 @@ st.markdown("""
     font-size: 2em;
 }
 </style>
-""",
-            unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Title and introduction
 st.title("🎲 Testdaten Generator")
@@ -56,6 +55,66 @@ st.markdown("""
 Generieren Sie synthetische Testdaten für Webportale mit anpassbaren Feldern und Formaten.
 Wählen Sie die benötigten Felder aus, passen Sie die Parameter an und laden Sie Ihren Datensatz herunter.
 """)
+
+# Initialize selected fields in session state if not present (moved higher for showcase loading)
+if 'selected_fields' not in st.session_state:
+    st.session_state.selected_fields = {
+        field: False
+        for field in field_definitions.keys()
+    }
+
+# Initialize configuration in session state if not present (moved higher for showcase loading)
+if 'field_config' not in st.session_state:
+    st.session_state.field_config = {}
+
+# Check if we need to load a configuration from a showcase
+if 'load_dataset_id' in st.session_state:
+    dataset_id = st.session_state.load_dataset_id
+    st.info(f"Lade Konfiguration aus dem Community Showcase (Dataset ID: {dataset_id})...")
+    
+    # Create a container for the dice animation
+    load_dice_container = st.empty()
+    
+    # Show the animated dice
+    load_dice_container.markdown("""
+    <div class="dice-container">
+        <div class="dice-icon dice-animation">🎲</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Get the dataset
+    dataset = get_dataset_by_id(dataset_id)
+    
+    if dataset is None:
+        # Clear the animation container
+        load_dice_container.empty()
+        st.error(f"Keine Konfiguration mit ID {dataset_id} gefunden.")
+    else:
+        # Update the session state with the loaded configuration
+        for field in field_definitions.keys():
+            if field in dataset['fields']:
+                st.session_state.selected_fields[field] = True
+            else:
+                st.session_state.selected_fields[field] = False
+        
+        # Update field configurations
+        st.session_state.field_config = dataset['field_config']
+        
+        # Clear the animation container
+        load_dice_container.empty()
+        
+        # Show success message
+        st.success(f"Konfiguration aus Community Showcase erfolgreich geladen!")
+    
+    # Remove the load_dataset_id from session state to prevent reloading
+    del st.session_state.load_dataset_id
+
+# Initialize variables that might be used in different app modes
+# These are needed to avoid "possibly unbound" errors
+num_records = 100
+locale = "de_DE"
+seed = None
+export_format = "CSV"
 
 # Sidebar for controls
 with st.sidebar:
@@ -87,14 +146,14 @@ with st.sidebar:
     seed = None
     if use_seed:
         seed = st.number_input("Zufallsseed",
-                               min_value=0,
-                               max_value=999999,
-                               value=42)
+                            min_value=0,
+                            max_value=999999,
+                            value=42)
 
     # Export format
     export_format = st.radio("Exportformat",
-                             options=["CSV", "JSON", "SQL"],
-                             index=0)
+                            options=["CSV", "JSON", "SQL"],
+                            index=0)
 
     st.divider()
 
@@ -163,7 +222,7 @@ for i, (category, fields) in enumerate(field_categories.items()):
 
                     # Create configuration options based on field type
                     for param, param_config in definition.get("params",
-                                                              {}).items():
+                                                            {}).items():
                         param_type = param_config["type"]
                         param_default = param_config.get("default")
                         param_label = param_config.get("label", param)
@@ -234,8 +293,8 @@ with col1:
                                 use_container_width=True)
 with col2:
     reset_button = st.button("Zurücksetzen",
-                             type="secondary",
-                             use_container_width=True)
+                            type="secondary",
+                            use_container_width=True)
 
 # Handle reset button
 if reset_button:
@@ -248,7 +307,7 @@ if reset_button:
         <div class="dice-icon dice-animation">🎲</div>
     </div>
     """,
-                                  unsafe_allow_html=True)
+                                unsafe_allow_html=True)
 
     # Clear generated data if it exists
     if 'generated_df' in st.session_state:
@@ -282,7 +341,7 @@ if generate_button:
         <div class="dice-icon dice-animation">🎲</div>
     </div>
     """,
-                            unsafe_allow_html=True)
+                        unsafe_allow_html=True)
 
     with st.spinner("Daten werden generiert..."):
         # Get the fields that are selected
@@ -294,9 +353,9 @@ if generate_button:
         # Generate the data
         try:
             df = generate_data(selected_fields_config,
-                               num_records=num_records,
-                               locale=locale,
-                               seed=seed)
+                            num_records=num_records,
+                            locale=locale,
+                            seed=seed)
 
             # Store the dataframe in session state
             st.session_state.generated_df = df
@@ -348,21 +407,21 @@ if 'generated_df' in st.session_state:
         if export_format == "CSV":
             csv_data = export_to_csv(df)
             st.download_button(label="CSV herunterladen",
-                               data=csv_data,
-                               file_name=f"testdaten_{timestamp}.csv",
-                               mime="text/csv",
-                               use_container_width=True)
+                            data=csv_data,
+                            file_name=f"testdaten_{timestamp}.csv",
+                            mime="text/csv",
+                            use_container_width=True)
         elif export_format == "JSON":
             json_data = export_to_json(df)
             st.download_button(label="JSON herunterladen",
-                               data=json_data,
-                               file_name=f"testdaten_{timestamp}.json",
-                               mime="application/json",
-                               use_container_width=True)
+                            data=json_data,
+                            file_name=f"testdaten_{timestamp}.json",
+                            mime="application/json",
+                            use_container_width=True)
         else:  # SQL
             # Add option for table name
             table_name = st.text_input("Tabellen-Name (für SQL-Script)",
-                                       value="testdaten")
+                                    value="testdaten")
 
             # Display SQL dialect info
             st.info(
@@ -379,10 +438,10 @@ if 'generated_df' in st.session_state:
                 st.caption("Nur die ersten 20 Zeilen werden angezeigt.")
 
             st.download_button(label="SQL herunterladen",
-                               data=sql_data,
-                               file_name=f"testdaten_{timestamp}.sql",
-                               mime="text/plain",
-                               use_container_width=True)
+                            data=sql_data,
+                            file_name=f"testdaten_{timestamp}.sql",
+                            mime="text/plain",
+                            use_container_width=True)
 
     # Add option to save the configuration to the database
     with save_col:
@@ -399,8 +458,8 @@ if 'generated_df' in st.session_state:
             dataset_name = st.text_input(
                 "Name", value=f"Datensatz {time.strftime('%Y-%m-%d %H:%M')}")
             dataset_description = st.text_area("Beschreibung",
-                                               value=config_summary,
-                                               height=170)
+                                            value=config_summary,
+                                            height=170)
             save_submit = st.form_submit_button("Konfiguration speichern")
 
         if save_submit:
@@ -422,223 +481,176 @@ if 'generated_df' in st.session_state:
                     locale=locale,
                     selected_fields=selected_field_names,
                     field_config=selected_fields_config,
-                    created_at=created_at)
+                    created_at=created_at,
+                )
 
-                st.success(
-                    f"Konfiguration '{dataset_name}' erfolgreich gespeichert!")
+                if dataset_id:
+                    st.success(
+                        f"✅ Konfiguration erfolgreich gespeichert (ID: {dataset_id})!")
+                else:
+                    st.error(
+                        "Fehler beim Speichern der Konfiguration: Keine ID zurückgegeben."
+                    )
 
             except Exception as e:
                 st.error(f"Fehler beim Speichern der Konfiguration: {str(e)}")
 
-# Add a section to load saved configurations
-st.header("Gespeicherte Konfigurationen")
+    # Database operations section
+    st.header("5. Gespeicherte Konfigurationen")
+    load_col1, load_col2 = st.columns(2)
 
-try:
-    # Get all saved datasets
-    saved_datasets_df = get_all_saved_datasets()
+    with load_col1:
+        # Get all saved datasets and display them
+        try:
+            datasets_df = get_all_saved_datasets()
 
-    if saved_datasets_df.empty:
-        st.info(
-            "Keine gespeicherten Konfigurationen gefunden. Generieren Sie einen Datensatz und speichern Sie ihn, um ihn hier anzuzeigen."
-        )
-    else:
-        # Load or delete saved configuration
-        col1, col2 = st.columns(2)
+            if datasets_df is not None and not datasets_df.empty:
+                # Display the datasets
+                st.subheader("Gespeicherte Datensätze")
+                st.dataframe(datasets_df, height=300)
 
-        with col1:
-            # Load a configuration
-            load_form = st.form(key="load_form")
-            with load_form:
-                st.markdown("### Konfiguration laden")
-                load_id = st.number_input("Konfigurations-ID",
-                                          min_value=1,
-                                          value=1)
-                load_submit = st.form_submit_button("Konfiguration laden")
+                # Load a configuration
+                load_form = st.form(key="load_form")
+                with load_form:
+                    st.markdown("### Konfiguration laden")
+                    load_id = st.number_input("Konfigurations-ID",
+                                            min_value=1,
+                                            value=1)
+                    load_submit = st.form_submit_button("Konfiguration laden")
 
-            if load_submit:
-                # Create a container for the dice animation
-                load_dice_container = st.empty()
+                if load_submit:
+                    # Create a container for the dice animation
+                    load_dice_container = st.empty()
 
-                # Show the animated dice
-                load_dice_container.markdown("""
-                <div class="dice-container">
-                    <div class="dice-icon dice-animation">🎲</div>
-                </div>
-                """,
-                                             unsafe_allow_html=True)
+                    # Show the animated dice
+                    load_dice_container.markdown("""
+                    <div class="dice-container">
+                        <div class="dice-icon dice-animation">🎲</div>
+                    </div>
+                    """,
+                                                unsafe_allow_html=True)
 
-                dataset = get_dataset_by_id(load_id)
+                    dataset = get_dataset_by_id(load_id)
 
-                if dataset is None:
-                    # Clear the animation container
-                    load_dice_container.empty()
-                    st.error(f"Keine Konfiguration mit ID {load_id} gefunden.")
-                else:
-                    # Update the session state with the loaded configuration
-                    for field in field_definitions.keys():
-                        if field in dataset['fields']:
-                            st.session_state.selected_fields[field] = True
-                        else:
-                            st.session_state.selected_fields[field] = False
+                    if dataset is None:
+                        # Clear the animation container
+                        load_dice_container.empty()
+                        st.error(f"Keine Konfiguration mit ID {load_id} gefunden.")
+                    else:
+                        # Update the session state with the loaded configuration
+                        for field in field_definitions.keys():
+                            if field in dataset['fields']:
+                                st.session_state.selected_fields[field] = True
+                            else:
+                                st.session_state.selected_fields[field] = False
 
-                    # Update field configurations
-                    st.session_state.field_config = dataset['field_config']
+                        # Update field configurations
+                        st.session_state.field_config = dataset['field_config']
 
-                    # Clear the animation container
-                    load_dice_container.empty()
+                        # Clear the animation container
+                        load_dice_container.empty()
 
-                    # Show success message
-                    st.success(
-                        f"🎲 Konfiguration '{dataset['name']}' geladen! Die Seite wird neu geladen..."
-                    )
+                        # Show success message
+                        st.success(
+                            f"🎲 Konfiguration '{dataset['name']}' geladen! Die Seite wird neu geladen..."
+                        )
 
-                    # Rerun the app to update the UI
-                    time.sleep(1)
-                    st.rerun()
+                        # Rerun the app to update the UI
+                        time.sleep(1)
+                        st.rerun()
 
-        with col2:
-            # Delete a configuration
-            delete_form = st.form(key="delete_form")
-            with delete_form:
-                st.markdown("### Konfiguration löschen")
-                delete_option = st.radio("Löschen nach:",
-                                         options=["Einzel-ID", "ID-Bereich"],
-                                         horizontal=True)
+            else:
+                st.info(
+                    "Keine gespeicherten Konfigurationen gefunden. Speichern Sie eine Konfiguration, um sie später wiederverwenden zu können."
+                )
 
-                if delete_option == "Einzel-ID":
-                    delete_id = st.number_input("Konfigurations-ID",
-                                                min_value=1,
-                                                value=1,
-                                                key="delete_id")
-                else:  # ID-Bereich
-                    delete_range = st.text_input(
-                        "ID-Bereich (z.B. 2-6)",
-                        value="",
-                        help=
-                        "Geben Sie einen Bereich im Format 'Start-Ende' ein, z.B. '2-6'"
-                    )
+        except Exception as e:
+            st.error(f"Fehler beim Laden der gespeicherten Konfigurationen: {str(e)}")
 
-                delete_submit = st.form_submit_button("Konfiguration löschen")
+    with load_col2:
+        # Delete a configuration
+        delete_form = st.form(key="delete_form")
+        with delete_form:
+            st.markdown("### Konfiguration löschen")
+            delete_option = st.radio("Löschen nach:",
+                                    options=["Einzel-ID", "ID-Bereich"],
+                                    horizontal=True)
 
-            if delete_submit:
-                # Create a container for the dice animation
-                delete_dice_container = st.empty()
+            # Initialize variables to prevent "possibly unbound" errors
+            delete_id = 1
+            delete_range = ""
 
-                # Show the animated dice
-                delete_dice_container.markdown("""
-                <div class="dice-container">
-                    <div class="dice-icon dice-animation">🎲</div>
-                </div>
-                """,
-                                               unsafe_allow_html=True)
+            if delete_option == "Einzel-ID":
+                delete_id = st.number_input("Konfigurations-ID",
+                                            min_value=1,
+                                            value=1,
+                                            key="delete_id")
+            else:  # ID-Bereich
+                delete_range = st.text_input(
+                    "ID-Bereich (z.B. 2-6)",
+                    value="",
+                    help=
+                    "Geben Sie einen Bereich im Format 'Start-Ende' ein, z.B. '2-6'"
+                )
 
+            delete_submit = st.form_submit_button("Konfiguration löschen")
+
+        if delete_submit:
+            # Create a container for the dice animation
+            delete_dice_container = st.empty()
+
+            # Show the animated dice
+            delete_dice_container.markdown("""
+            <div class="dice-container">
+                <div class="dice-icon dice-animation">🎲</div>
+            </div>
+            """,
+                                        unsafe_allow_html=True)
+
+            try:
                 if delete_option == "Einzel-ID":
                     success = delete_dataset(delete_id)
-
                     # Clear the animation container
                     delete_dice_container.empty()
 
                     if success:
                         st.success(
-                            f"🎲 Konfiguration mit ID {delete_id} gelöscht!")
-                        time.sleep(1)
-                        st.rerun()
+                            f"🎲 Konfiguration mit ID {delete_id} wurde erfolgreich gelöscht!"
+                        )
                     else:
                         st.error(
-                            f"Keine Konfiguration mit ID {delete_id} gefunden."
-                        )
+                            f"Keine Konfiguration mit ID {delete_id} gefunden.")
                 else:  # ID-Bereich
+                    # Parse the range
                     try:
-                        # Parse the range
-                        if "-" in delete_range:
-                            start_id, end_id = map(int,
-                                                   delete_range.split("-"))
+                        start_id, end_id = map(int, delete_range.split("-"))
+                        if start_id > end_id:
+                            start_id, end_id = end_id, start_id  # Swap if start is greater than end
 
-                            if start_id > end_id:
-                                # Clear the animation container
-                                delete_dice_container.empty()
-                                st.error(
-                                    "Start-ID muss kleiner oder gleich End-ID sein."
-                                )
-                            else:
-                                deleted_count = delete_dataset_range(
-                                    start_id, end_id)
+                        rows_deleted = delete_dataset_range(start_id, end_id)
+                        # Clear the animation container
+                        delete_dice_container.empty()
 
-                                # Clear the animation container
-                                delete_dice_container.empty()
-
-                                if deleted_count > 0:
-                                    st.success(
-                                        f"🎲 {deleted_count} Konfiguration(en) im Bereich {start_id}-{end_id} gelöscht!"
-                                    )
-                                    time.sleep(1)
-                                    st.rerun()
-                                else:
-                                    st.warning(
-                                        f"Keine Konfigurationen im Bereich {start_id}-{end_id} gefunden."
-                                    )
+                        if rows_deleted > 0:
+                            st.success(
+                                f"🎲 {rows_deleted} Konfigurationen im Bereich {start_id}-{end_id} wurden erfolgreich gelöscht!"
+                            )
                         else:
-                            # Clear the animation container
-                            delete_dice_container.empty()
-                            st.error(
-                                "Ungültiges Format. Bitte geben Sie den Bereich im Format 'Start-Ende' ein, z.B. '2-6'."
+                            st.warning(
+                                f"Keine Konfigurationen im Bereich {start_id}-{end_id} gefunden."
                             )
                     except ValueError:
                         # Clear the animation container
                         delete_dice_container.empty()
                         st.error(
-                            "Ungültiges Format. Bitte geben Sie gültige Zahlen ein."
+                            "Ungültiges Bereichsformat. Bitte verwenden Sie das Format 'Start-Ende', z.B. '2-6'."
                         )
 
-        # Display the saved datasets in a table below the forms
-        st.subheader("Liste der gespeicherten Konfigurationen")
-        st.markdown(
-            "Verwenden Sie die ID einer Konfiguration in den obigen Formularen:"
-        )
+            except Exception as e:
+                # Clear the animation container
+                delete_dice_container.empty()
+                st.error(f"Fehler beim Löschen der Konfiguration: {str(e)}")
 
-        # Create a dataframe for display
-        display_df = saved_datasets_df[[
-            'id', 'name', 'description', 'num_records', 'locale', 'created_at'
-        ]].copy()
-        display_df.columns = [
-            'ID', 'Name', 'Beschreibung', 'Anzahl Datensätze', 'Locale',
-            'Erstellt am'
-        ]
-
-        # Show the table with column configuration to ensure all columns are appropriately sized
-        st.dataframe(
-            display_df,
-            height=200,
-            column_config={
-                "ID":
-                st.column_config.NumberColumn(
-                    "ID",
-                    width="small",
-                    help="Die eindeutige ID der gespeicherten Konfiguration"),
-                "Name":
-                st.column_config.TextColumn("Name",
-                                            width="medium",
-                                            help="Name der Konfiguration"),
-                "Beschreibung":
-                st.column_config.TextColumn(
-                    "Beschreibung",
-                    width="large",
-                    help="Beschreibung der Konfiguration"),
-                "Anzahl Datensätze":
-                st.column_config.NumberColumn(
-                    "Anzahl Datensätze",
-                    width="small",
-                    help="Anzahl der generierten Datensätze"),
-                "Locale":
-                st.column_config.TextColumn(
-                    "Locale",
-                    width="small",
-                    help="Verwendete Sprach- und Ländereinstellung"),
-                "Erstellt am":
-                st.column_config.TextColumn("Erstellt am",
-                                            width="medium",
-                                            help="Zeitpunkt der Erstellung")
-            })
-
-except Exception as e:
-    st.error(f"Fehler beim Laden der gespeicherten Konfigurationen: {str(e)}")
+            # Refresh the page to show updated data
+            time.sleep(1)
+            st.rerun()

@@ -1,0 +1,7 @@
+# This file controls the ordering of pages in the Streamlit sidebar
+# Format is: page_name = "path/to/file.py"
+
+[pages]
+Home = "pages/Home.py"
+"Testdaten Generator" = "pages/0_Testdaten_Generator.py"
+Pseudonymizer = "pages/1_Pseudonymizer.py"
